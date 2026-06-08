@@ -11,31 +11,41 @@ from src.config import CITIES
 load_dotenv()
 API_KEY = os.getenv("TOMTOM_API_KEY")
 
+# Bounding boxes: minLon, minLat, maxLon, maxLat
+CITY_BBOX = {
+    "Toronto":  "-79.6393,43.5810,-79.1154,43.8555",
+    "New York": "-74.2591,40.4774,-73.7004,40.9176",
+    "London":   "-0.5104,51.2868,0.3340,51.6919",
+    "Mumbai":   "72.7760,18.8920,73.0760,19.2720",
+    "Tokyo":    "139.5814,35.5244,139.9114,35.8174",
+}
+
 def fetch_traffic(city: dict) -> dict:
-    lat = city["lat"]
-    lon = city["lon"]
+    name = city["name"]
+    bbox = CITY_BBOX.get(name)
 
     url = (
-        f"https://api.tomtom.com/traffic/services/4/flowSegmentData/"
-        f"absolute/10/json?point={lat},{lon}&unit=KMPH&key={API_KEY}"
+        f"https://api.tomtom.com/traffic/services/5/incidentDetails"
+        f"?bbox={bbox}&fields={{incidents{{type,geometry{{type}},properties{{iconCategory}}}}}}"
+        f"&language=en-GB&timeValidityFilter=present&key={API_KEY}"
     )
 
     response = requests.get(url, timeout=10)
     response.raise_for_status()
     data = response.json()
 
-    flow = data.get("flowSegmentData", {})
-    current_speed   = flow.get("currentSpeed", 0)
-    free_flow_speed = flow.get("freeFlowSpeed", 1)
+    incidents = data.get("incidents", [])
+    total     = len(incidents)
 
-    congestion_index = round((1 - current_speed / free_flow_speed) * 100, 2)
+    # Score: 0–100 based on incident count
+    # 0 incidents = 0, 50+ incidents = 100
+    congestion_index = min(round((total / 1000) * 100, 2), 100)
 
     return {
-        "city":                  city["name"],
-        "timestamp":             datetime.utcnow().isoformat(),
-        "current_speed_kmph":    current_speed,
-        "free_flow_speed_kmph":  free_flow_speed,
-        "congestion_index":      max(0, congestion_index),
+        "city":             name,
+        "timestamp":        datetime.utcnow().isoformat(),
+        "incident_count":   total,
+        "congestion_index": congestion_index,
     }
 
 def run():
@@ -47,7 +57,7 @@ def run():
         try:
             result = fetch_traffic(city)
             results.append(result)
-            print(f"  Congestion index: {result['congestion_index']}")
+            print(f"  Incidents: {result['incident_count']}  Congestion index: {result['congestion_index']}")
         except Exception as e:
             print(f"  ERROR for {city['name']}: {e}")
 
