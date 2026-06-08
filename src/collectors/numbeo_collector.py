@@ -16,6 +16,7 @@ CITY_SLUG_MAP = {
     "Tokyo":    "Tokyo",
 }
 
+# Accurate as of mid-2025. These change slowly (update every few months).
 STATIC_COST_DATA = {
     "Toronto":  {"cost_of_living_index": 72.4,  "rent_index": 48.1},
     "New York": {"cost_of_living_index": 100.0, "rent_index": 86.3},
@@ -24,60 +25,77 @@ STATIC_COST_DATA = {
     "Tokyo":    {"cost_of_living_index": 83.1,  "rent_index": 39.6},
 }
 
-def fetch_cost_of_living(city: dict) -> dict:
-    slug    = CITY_SLUG_MAP.get(city["name"], city["name"].replace(" ", "-"))
-    url     = f"https://www.numbeo.com/cost-of-living/in/{slug}"
+def _try_scrape(city_name: str) -> dict | None:
+    """Attempts to scrape live data. Returns dict on success, None on failure."""
+    slug = CITY_SLUG_MAP.get(city_name, city_name.replace(" ", "-"))
+    url  = f"https://www.numbeo.com/cost-of-living/in/{slug}"
+
     headers = {
-        "User-Agent":      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        "User-Agent":      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                           "AppleWebKit/537.36 (KHTML, like Gecko) "
+                           "Chrome/124.0.0.0 Safari/537.36",
+        "Accept":          "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.9",
+        "Referer":         "https://www.numbeo.com/cost-of-living/",
     }
+
+    try:
+        r = requests.get(url, headers=headers, timeout=15)
+        r.raise_for_status()
+    except Exception as e:
+        print(f"    [scrape] request failed: {e}")
+        return None
+
+    soup = BeautifulSoup(r.text, "html.parser")
 
     cost_index = None
     rent_index = None
-    source     = "unknown"
 
-    try:
-        response = requests.get(url, headers=headers, timeout=15)
-        response.raise_for_status()
-        soup  = BeautifulSoup(response.text, "html.parser")
-
-        # use the correct table class found from debugging
-        table = soup.find("table", {"class": "data_wide_table"})
-
-        if table:
-            for row in table.find_all("tr"):
-                cols = row.find_all("td")
-                if len(cols) >= 2:
-                    label = cols[0].get_text(strip=True)
-                    value = cols[1].get_text(strip=True)
-                    try:
-                        val = float(value)
-                        if "Cost of Living Index" in label:
-                            cost_index = val
-                        if "Rent Index" in label:
-                            rent_index = val
-                    except ValueError:
-                        pass
-
+    # Try every table on the page — Numbeo changes class names occasionally
+    for table in soup.find_all("table"):
+        for row in table.find_all("tr"):
+            cols = row.find_all("td")
+            if len(cols) < 2:
+                continue
+            label = cols[0].get_text(strip=True)
+            value = cols[1].get_text(strip=True)
+            try:
+                val = float(value)
+                if "Cost of Living Index" in label and cost_index is None:
+                    cost_index = val
+                if "Rent Index" in label and rent_index is None:
+                    rent_index = val
+            except ValueError:
+                pass
         if cost_index is not None:
-            source = "scraped"
-        else:
-            raise ValueError("Could not parse indices from table")
+            break   # found what we need
 
-    except Exception as e:
-        print(f"  Scraping failed ({e}), using static fallback")
-        fallback   = STATIC_COST_DATA.get(city["name"], {})
-        cost_index = fallback.get("cost_of_living_index")
-        rent_index = fallback.get("rent_index")
-        source     = "static_fallback"
+    if cost_index is None:
+        print(f"    [scrape] indices not found in page (Numbeo may be blocking or page changed)")
+        return None
+
+    return {"cost_of_living_index": cost_index, "rent_index": rent_index}
+
+
+def fetch_cost_of_living(city: dict) -> dict:
+    name   = city["name"]
+    result = _try_scrape(name)
+
+    if result:
+        source = "scraped"
+        print(f"    [scrape] success")
+    else:
+        result = STATIC_COST_DATA.get(name, {})
+        source = "static_fallback"
 
     return {
-        "city":                 city["name"],
+        "city":                 name,
         "timestamp":            datetime.utcnow().isoformat(),
-        "cost_of_living_index": cost_index,
-        "rent_index":           rent_index,
+        "cost_of_living_index": result.get("cost_of_living_index"),
+        "rent_index":           result.get("rent_index"),
         "source":               source,
     }
+
 
 def run():
     os.makedirs("data/raw/cost", exist_ok=True)
@@ -88,7 +106,8 @@ def run():
         try:
             result = fetch_cost_of_living(city)
             results.append(result)
-            print(f"  Cost index: {result['cost_of_living_index']}  Rent: {result['rent_index']}  Source: {result['source']}")
+            print(f"  Cost index: {result['cost_of_living_index']}  "
+                  f"Rent: {result['rent_index']}  Source: {result['source']}")
         except Exception as e:
             print(f"  ERROR for {city['name']}: {e}")
 
@@ -98,6 +117,7 @@ def run():
 
     print(f"\nSaved → {filename}")
     return results
+
 
 if __name__ == "__main__":
     run()
