@@ -1,35 +1,35 @@
 [
   {
     "city": "Toronto",
-    "timestamp": "2026-06-08T22:02:07.521468",
+    "timestamp": "2026-06-08T22:20:29.427523",
     "cost_of_living_index": 72.4,
     "rent_index": 48.1,
     "source": "static_fallback"
   },
   {
     "city": "New York",
-    "timestamp": "2026-06-08T22:02:08.586402",
+    "timestamp": "2026-06-08T22:20:31.092464",
     "cost_of_living_index": 100.0,
     "rent_index": 86.3,
     "source": "static_fallback"
   },
   {
     "city": "London",
-    "timestamp": "2026-06-08T22:02:09.715215",
+    "timestamp": "2026-06-08T22:20:33.461079",
     "cost_of_living_index": 81.2,
     "rent_index": 62.7,
     "source": "static_fallback"
   },
   {
     "city": "Mumbai",
-    "timestamp": "2026-06-08T22:02:10.824997",
+    "timestamp": "2026-06-08T22:20:35.992743",
     "cost_of_living_index": 28.3,
     "rent_index": 12.4,
     "source": "static_fallback"
   },
   {
     "city": "Tokyo",
-    "timestamp": "2026-06-08T22:02:11.958087",
+    "timestamp": "2026-06-08T22:20:38.969076",
     "cost_of_living_index": 83.1,
     "rent_index": 39.6,
     "source": "static_fallback"
