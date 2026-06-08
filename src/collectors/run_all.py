@@ -1,5 +1,6 @@
 import sys
 import os
+from datetime import datetime
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
@@ -10,10 +11,12 @@ from src.collectors import (
     numbeo_collector,
     safety_collector,
 )
+from src.etl_loader import run_etl
 
 def run_all():
     print("=" * 50)
-    print("CITY STRESS INDEX — Data Collection Run")
+    print("CITY STRESS INDEX — Daily Collection Run")
+    print(f"Date: {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}")
     print("=" * 50)
 
     collectors = [
@@ -24,19 +27,25 @@ def run_all():
         ("Safety",      safety_collector),
     ]
 
-    results = {}
+    failed = []
     for name, collector in collectors:
         print(f"\n--- {name} ---")
         try:
-            results[name.lower()] = collector.run()
-            print(f"{name} ✓")
+            collector.run()
         except Exception as e:
-            print(f"{name} FAILED: {e}")
+            print(f"FAILED: {e}")
+            failed.append(name)
+
+    print("\n--- Loading into database ---")
+    today = datetime.utcnow().strftime("%Y-%m-%d")
+    run_etl(date_str=today)
 
     print("\n" + "=" * 50)
-    print("All collectors done.")
-    print("Check data/raw/ for your JSON files.")
-    return results
+    if failed:
+        print(f"Completed with failures: {', '.join(failed)}")
+    else:
+        print("All collectors succeeded. Database updated.")
+    print("=" * 50)
 
 if __name__ == "__main__":
     run_all()
