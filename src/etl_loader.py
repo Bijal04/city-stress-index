@@ -210,6 +210,9 @@ def load_safety(date_str: str = None):
     print(f"  Safety:      {count} rows updated.")
 
 def run_etl(date_str: str = None):
+    from src.load_dimensions import load_dim_date
+    load_dim_date()
+
     print("=" * 50)
     print(f"ETL run — {date_str if date_str else 'all files'}")
     print("=" * 50)

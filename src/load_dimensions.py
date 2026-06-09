@@ -80,7 +80,7 @@ def load_dim_date(start_date: str = "2024-01-01", end_date: str = None):
 
     conn.commit()
     conn.close()
-    print(f"dim_date: {loaded} new dates inserted ({start_date} to {end_date}).")
+    print(f"dim_date: {loaded} new dates inserted (up to {end_date}).")
 
 def run():
     print("Loading dimension tables...")
