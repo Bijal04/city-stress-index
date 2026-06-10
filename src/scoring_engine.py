@@ -8,8 +8,7 @@ from datetime import datetime
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from src.database import get_connection
 
-'''CONFIG_PATH = os.path.join(os.path.dirname(__file__), '..', 'config.yaml')'''
-CONFIG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'config.yaml')
+CONFIG_PATH = os.path.join(os.path.dirname(__file__), '..', 'config.yaml')
 
 def load_config() -> dict:
     with open(CONFIG_PATH, 'r') as f:
@@ -42,16 +41,22 @@ def load_data_for_scoring() -> pd.DataFrame:
             f.crime_score,
             f.cost_index,
             cf.traffic_7d_avg,
-            cf.aqi_7d_avg,
-            cf.heat_stress_index,
-            cf.comfort_score,
-            cf.affordability_score,
+            cf.air_quality_7d_avg   AS aqi_7d_avg,
+            cf.traffic_norm,
+            cf.air_quality_norm,
+            cf.weather_norm,
+            cf.cost_norm,
+            cf.safety_norm,
+            cf.traffic_volatility,
             cf.traffic_trend,
-            cf.aqi_trend,
-            cf.crime_trend
+            cf.air_quality_trend    AS aqi_trend,
+            cf.weather_trend,
+            cf.composite_stress_score,
+            cf.stress_label         AS feature_stress_label
         FROM fact_city_metrics f
-        JOIN dim_city c          ON f.city_id  = c.city_id
-        LEFT JOIN city_features cf ON (f.city_id = cf.city_id AND f.date_id = cf.date_id)
+        JOIN dim_city c ON f.city_id = c.city_id
+        LEFT JOIN city_features cf
+          ON (f.city_id = cf.city_id AND f.date_id = cf.date_id)
         ORDER BY f.city_id, f.date_id
     """, conn)
     conn.close()
@@ -59,46 +64,38 @@ def load_data_for_scoring() -> pd.DataFrame:
     return df
 
 def compute_component_scores(df: pd.DataFrame, config: dict) -> pd.DataFrame:
-    norm = config["normalization"]
     df   = df.copy()
+    norm = config["normalization"]
 
-    # Traffic score — use 7d avg if available, else raw
-    traffic_raw = df["traffic_7d_avg"].combine_first(df["congestion_index"])
-    df["traffic_score"] = traffic_raw.apply(
-        lambda v: normalize(v, norm["traffic"]["min"], norm["traffic"]["max"])
-    )
-
-    # Air quality score — use 7d avg if available, else raw
-    aqi_raw = df["aqi_7d_avg"].combine_first(df["aqi_estimate"])
-    df["air_quality_score"] = aqi_raw.apply(
-        lambda v: normalize(v, norm["air_quality"]["min"], norm["air_quality"]["max"])
-    )
-
-    # Weather score — use heat stress index + weather stress combined
-    df["weather_score"] = df.apply(lambda row: (
-        normalize(
-            (row["heat_stress_index"] if pd.notna(row["heat_stress_index"]) else 0) * 0.5
-            + (row["weather_stress"]  if pd.notna(row["weather_stress"])   else 0) * 0.5,
-            norm["weather"]["min"],
-            norm["weather"]["max"],
+    df["traffic_score"] = df["traffic_norm"].combine_first(
+        df["congestion_index"].apply(
+            lambda v: normalize(v, norm["traffic"]["min"], norm["traffic"]["max"])
         )
-    ), axis=1)
-
-    # Safety score — direct normalize
-    df["safety_score"] = df["crime_score"].apply(
-        lambda v: normalize(v, norm["safety"]["min"], norm["safety"]["max"])
     )
 
-    # Cost score — use affordability score if available, else normalize cost_index
-    df["cost_score"] = df.apply(lambda row: (
-        normalize(
-            100 - row["affordability_score"]
-            if pd.notna(row["affordability_score"])
-            else row["cost_index"],
-            norm["cost"]["min"],
-            norm["cost"]["max"],
+    df["air_quality_score"] = df["air_quality_norm"].combine_first(
+        df["aqi_estimate"].apply(
+            lambda v: normalize(v, norm["air_quality"]["min"], norm["air_quality"]["max"])
         )
-    ), axis=1)
+    )
+
+    df["weather_score"] = df["weather_norm"].combine_first(
+        df["weather_stress"].apply(
+            lambda v: normalize(v, norm["weather"]["min"], norm["weather"]["max"])
+        )
+    )
+
+    df["safety_score"] = df["safety_norm"].combine_first(
+        df["crime_score"].apply(
+            lambda v: normalize(v, norm["safety"]["min"], norm["safety"]["max"])
+        )
+    )
+
+    df["cost_score"] = df["cost_norm"].combine_first(
+        df["cost_index"].apply(
+            lambda v: normalize(v, norm["cost"]["min"], norm["cost"]["max"])
+        )
+    )
 
     return df
 
@@ -152,7 +149,11 @@ def save_scores_to_db(df: pd.DataFrame):
     saved  = 0
 
     for _, row in df.iterrows():
-        date_str = row["date_id"].strftime("%Y-%m-%d") if hasattr(row["date_id"], "strftime") else str(row["date_id"])[:10]
+        date_str = (
+            row["date_id"].strftime("%Y-%m-%d")
+            if hasattr(row["date_id"], "strftime")
+            else str(row["date_id"])[:10]
+        )
 
         cursor.execute("""
             INSERT INTO city_stress_scores (
@@ -196,7 +197,7 @@ def run_scoring_engine():
     print("=" * 55)
 
     print("\nLoading config...")
-    config = load_config()
+    config  = load_config()
     weights = config["scoring"]["weights"]
     print(f"  Weights: Traffic {weights['traffic']*100:.0f}% | "
           f"Air {weights['air_quality']*100:.0f}% | "
@@ -222,14 +223,28 @@ def run_scoring_engine():
     print(f"  {saved} scores saved to city_stress_scores.")
 
     print("\n--- Latest scores summary ---")
-    latest = df[df["date_id"] == df["date_id"].max()].sort_values("total_stress_score", ascending=False)
+    latest = (
+        df[df["date_id"] == df["date_id"].max()]
+        .sort_values("total_stress_score", ascending=False)
+    )
+    print(f"\n{'City':<12} {'Score':>6}  {'Label':<10}  "
+          f"{'Traffic':>8}  {'Air':>6}  {'Weather':>8}  "
+          f"{'Safety':>7}  {'Cost':>6}")
+    print("-" * 75)
     for _, row in latest.iterrows():
-        print(f"  {row['city_name']:<12} "
-              f"Score: {row['total_stress_score']:>5.1f}  "
-              f"Label: {row['stress_label']:<10}  "
-              f"Traffic: {row['traffic_score']:>5.1f}  "
-              f"Air: {row['air_quality_score']:>5.1f}  "
-              f"Weather: {row['weather_score']:>5.1f}")
+        print(f"  {row['city_name']:<10} "
+              f"{row['total_stress_score']:>6.1f}  "
+              f"{row['stress_label']:<10}  "
+              f"{row['traffic_score']:>8.1f}  "
+              f"{row['air_quality_score']:>6.1f}  "
+              f"{row['weather_score']:>8.1f}  "
+              f"{row['safety_score']:>7.1f}  "
+              f"{row['cost_score']:>6.1f}")
+
+    print("\n--- Score distribution ---")
+    dist = df.groupby("stress_label")["total_stress_score"].count()
+    for label, count in dist.items():
+        print(f"  {label:<10}: {count} days")
 
     print("\nScoring engine complete.")
     return df
