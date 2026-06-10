@@ -62,7 +62,6 @@ def run_full_backfill():
         print(f"  {row['name']}: {row['days']} days")
 
     conn.close()
-    print("\nPhase 4 complete.")
 
 if __name__ == "__main__":
     run_full_backfill()

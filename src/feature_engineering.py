@@ -227,18 +227,18 @@ def run():
             ROUND(AVG(f.composite_stress_score), 1) AS avg_stress,
             ROUND(MIN(f.composite_stress_score), 1) AS min_stress,
             ROUND(MAX(f.composite_stress_score), 1) AS max_stress,
-            f.stress_label AS current_label
+            (SELECT stress_label FROM city_features
+             WHERE city_id = f.city_id
+             ORDER BY date_id DESC LIMIT 1) AS current_label
         FROM city_features f
         JOIN dim_city c ON f.city_id = c.city_id
-        WHERE f.date_id = (SELECT MAX(date_id) FROM city_features WHERE city_id = f.city_id)
-        GROUP BY c.name, f.stress_label
+        GROUP BY c.name
         ORDER BY avg_stress DESC
     """, conn)
     conn.close()
 
     print("\n=== STRESS SCORE SUMMARY ===")
     print(summary.to_string(index=False))
-    print("\nPhase 5 complete.")
 
 
 if __name__ == "__main__":
