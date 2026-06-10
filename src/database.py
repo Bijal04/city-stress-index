@@ -85,13 +85,58 @@ def create_tables():
         )
     """)
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS city_features (
+            feature_id              INTEGER PRIMARY KEY AUTOINCREMENT,
+            city_id                 INTEGER NOT NULL,
+            date_id                 TEXT    NOT NULL,
+
+            -- Normalized scores (0-100)
+            traffic_norm            REAL,
+            air_quality_norm        REAL,
+            weather_norm            REAL,
+            cost_norm               REAL,
+            safety_norm             REAL,
+
+            -- Rolling averages (7-day)
+            traffic_7d_avg          REAL,
+            air_quality_7d_avg      REAL,
+            weather_7d_avg          REAL,
+
+            -- Rolling averages (30-day)
+            traffic_30d_avg         REAL,
+            air_quality_30d_avg     REAL,
+            weather_30d_avg         REAL,
+
+            -- Volatility (7-day standard deviation)
+            traffic_volatility      REAL,
+            air_quality_volatility  REAL,
+            weather_volatility      REAL,
+
+            -- Trend (-1 = improving, 0 = stable, 1 = worsening)
+            traffic_trend           INTEGER,
+            air_quality_trend       INTEGER,
+            weather_trend           INTEGER,
+
+            -- Final composite score
+            composite_stress_score  REAL,
+            stress_label            TEXT,
+
+            created_at              TEXT DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (city_id) REFERENCES dim_city (city_id),
+            FOREIGN KEY (date_id) REFERENCES dim_date  (date_id),
+            UNIQUE (city_id, date_id)
+        )
+    """)
+
     conn.commit()
     conn.close()
-    print("All 4 tables created successfully.")
+    print("All 5 tables created successfully.")
     print("  dim_city")
     print("  dim_date")
     print("  fact_city_metrics")
     print("  city_stress_scores")
+    print("  city_features")
 
 if __name__ == "__main__":
     create_tables()
