@@ -131,7 +131,7 @@ def create_tables():
 
     conn.commit()
     conn.close()
-    print("All 5 tables created successfully.")
+    print("All tables created successfully.")
     print("  dim_city")
     print("  dim_date")
     print("  fact_city_metrics")
