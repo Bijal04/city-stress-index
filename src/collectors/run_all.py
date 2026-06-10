@@ -11,13 +11,15 @@ from src.collectors import (
     numbeo_collector,
     safety_collector,
 )
-from src.etl_loader import run_etl
+from src.etl_loader          import run_etl
+from src.feature_engineering import run as run_feature_engineering
+from src.scoring_engine      import run_scoring_engine
 
 def run_all():
-    print("=" * 50)
-    print("CITY STRESS INDEX — Daily Collection Run")
+    print("=" * 55)
+    print("CITY STRESS INDEX — Daily Pipeline Run")
     print(f"Date: {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}")
-    print("=" * 50)
+    print("=" * 55)
 
     collectors = [
         ("Traffic",     tomtom_collector),
@@ -40,12 +42,19 @@ def run_all():
     today = datetime.utcnow().strftime("%Y-%m-%d")
     run_etl(date_str=today)
 
-    print("\n" + "=" * 50)
+    print("\n--- Feature engineering ---")
+    run_feature_engineering()
+
+    print("\n--- Scoring engine ---")
+    run_scoring_engine()
+
+    print("\n" + "=" * 55)
     if failed:
         print(f"Completed with failures: {', '.join(failed)}")
     else:
-        print("All collectors succeeded. Database updated.")
-    print("=" * 50)
+        print("Full pipeline complete.")
+        print("Collect → ETL → Features → Scores → Done.")
+    print("=" * 55)
 
 if __name__ == "__main__":
     run_all()
