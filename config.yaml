@@ -1,0 +1,30 @@
+scoring:
+  weights:
+    traffic:     0.35
+    air_quality: 0.25
+    weather:     0.20
+    safety:      0.10
+    cost:        0.10
+
+  labels:
+    low:      [0,  25]
+    moderate: [26, 50]
+    high:     [51, 75]
+    critical: [76, 100]
+
+normalization:
+  traffic:
+    min: 0
+    max: 100
+  air_quality:
+    min: 0
+    max: 300
+  weather:
+    min: 0
+    max: 100
+  safety:
+    min: 0
+    max: 100
+  cost:
+    min: 20
+    max: 120
