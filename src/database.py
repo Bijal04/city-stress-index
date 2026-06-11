@@ -129,6 +129,66 @@ def create_tables():
         )
     """)
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS city_rankings (
+            ranking_id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            date_id            TEXT    NOT NULL,
+            city_id            INTEGER NOT NULL,
+            rank               INTEGER NOT NULL,
+            total_stress_score REAL,
+            stress_label       TEXT,
+            rank_change        INTEGER,
+            FOREIGN KEY (city_id) REFERENCES dim_city (city_id),
+            FOREIGN KEY (date_id) REFERENCES dim_date (date_id),
+            UNIQUE (date_id, city_id)
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS city_forecasts (
+            forecast_id        INTEGER PRIMARY KEY AUTOINCREMENT,
+            city_id            INTEGER NOT NULL,
+            forecast_date      TEXT    NOT NULL,
+            model              TEXT    NOT NULL,
+            predicted_score    REAL,
+            lower_bound        REAL,
+            upper_bound        REAL,
+            created_at         TEXT    DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (city_id) REFERENCES dim_city (city_id),
+            UNIQUE (city_id, forecast_date, model)
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS city_anomalies (
+            anomaly_id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            city_id            INTEGER NOT NULL,
+            date_id            TEXT    NOT NULL,
+            metric             TEXT    NOT NULL,
+            value              REAL,
+            z_score            REAL,
+            is_anomaly         INTEGER DEFAULT 0,
+            anomaly_type       TEXT,
+            FOREIGN KEY (city_id) REFERENCES dim_city (city_id),
+            UNIQUE (city_id, date_id, metric)
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS city_clusters (
+            cluster_id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            city_id            INTEGER NOT NULL UNIQUE,
+            cluster_label      INTEGER,
+            cluster_name       TEXT,
+            avg_stress_score   REAL,
+            avg_traffic        REAL,
+            avg_air_quality    REAL,
+            avg_weather        REAL,
+            created_at         TEXT DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (city_id) REFERENCES dim_city (city_id)
+        )
+    """)
+
     conn.commit()
     conn.close()
     print("All tables created successfully.")
@@ -137,6 +197,6 @@ def create_tables():
     print("  fact_city_metrics")
     print("  city_stress_scores")
     print("  city_features")
-
+    print("  city_rankings")
 if __name__ == "__main__":
     create_tables()
