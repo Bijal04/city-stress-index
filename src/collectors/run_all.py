@@ -12,7 +12,8 @@ from src.collectors import (
     safety_collector,
 )
 from src.etl_loader             import run_etl
-from src.feature_engineering    import run_feature_engineering
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+from src.feature_engineering import run_feature_engineering
 from src.scoring_engine         import run_scoring_engine
 from src.analytics.run_analytics import run_all_analytics
 
