@@ -243,3 +243,6 @@ def run():
 
 if __name__ == "__main__":
     run()
+
+def run_feature_engineering():
+    return run()
