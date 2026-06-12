@@ -11,9 +11,10 @@ from src.collectors import (
     numbeo_collector,
     safety_collector,
 )
-from src.etl_loader          import run_etl
-from src.feature_engineering import run as run_feature_engineering
-from src.scoring_engine      import run_scoring_engine
+from src.etl_loader             import run_etl
+from src.feature_engineering    import run_feature_engineering
+from src.scoring_engine         import run_scoring_engine
+from src.analytics.run_analytics import run_all_analytics
 
 def run_all():
     print("=" * 55)
@@ -38,7 +39,7 @@ def run_all():
             print(f"FAILED: {e}")
             failed.append(name)
 
-    print("\n--- Loading into database ---")
+    print("\n--- ETL ---")
     today = datetime.utcnow().strftime("%Y-%m-%d")
     run_etl(date_str=today)
 
@@ -48,12 +49,15 @@ def run_all():
     print("\n--- Scoring engine ---")
     run_scoring_engine()
 
+    print("\n--- Analytics suite ---")
+    run_all_analytics()
+
     print("\n" + "=" * 55)
     if failed:
         print(f"Completed with failures: {', '.join(failed)}")
     else:
         print("Full pipeline complete.")
-        print("Collect → ETL → Features → Scores → Done.")
+        print("Collect → ETL → Features → Scores → Analytics")
     print("=" * 55)
 
 if __name__ == "__main__":
