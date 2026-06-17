@@ -11,6 +11,9 @@ st.set_page_config(page_title="Cluster Explorer", page_icon="🗂️", layout="w
 st.title("🗂️ City Cluster Explorer")
 st.markdown("Cities segmented into stress tiers using K-Means clustering.")
 
+from src.dashboard.utils.styling import inject_css, chart_theme
+inject_css()
+
 df = get_clusters()
 
 CLUSTER_COLORS = {
@@ -53,6 +56,7 @@ with col1:
     fig.update_traces(texttemplate="%{text:.1f}", textposition="outside")
     fig.update_layout(margin=dict(t=20, b=20), yaxis=dict(range=[0, 100]))
     st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(chart_theme(fig), use_container_width=True)
 
 with col2:
     st.subheader("Feature Comparison by Cluster")
@@ -78,7 +82,8 @@ with col2:
         margin=dict(t=40, b=40),
     )
     st.plotly_chart(fig2, use_container_width=True)
-
+    st.plotly_chart(chart_theme(fig2), use_container_width=True)
+    
 st.subheader("Historical Score by Cluster")
 hist_df = get_all_historical_scores()
 hist_df = hist_df.merge(df[["city", "cluster_name"]], on="city", how="left")
@@ -95,7 +100,7 @@ fig3 = px.line(
     labels={"date_id": "Date", "score": "Avg Stress Score", "cluster_name": "Cluster"},
 )
 fig3.update_layout(margin=dict(t=20, b=20))
-st.plotly_chart(fig3, use_container_width=True)
+st.plotly_chart(chart_theme(fig3), use_container_width=True)
 
 st.subheader("Cluster Details")
 st.dataframe(
