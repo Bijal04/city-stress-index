@@ -5,8 +5,9 @@ import pandas as pd
 import sys
 import os
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-from src.dashboard.utils.db import get_latest_scores, get_all_historical_scores
+sys.path.append(os.path.dirname(__file__))
+
+import src.dashboard.app
 
 st.set_page_config(
     page_title="City Stress Index",
@@ -77,6 +78,7 @@ with col1:
         yaxis=dict(range=[0, 100], title="Score"),
     )
     st.plotly_chart(fig, use_container_width=True)
+    
 
 with col2:
     st.subheader("Overall Stress Comparison")
