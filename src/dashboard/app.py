@@ -79,7 +79,6 @@ with col1:
         legend=dict(orientation="h", yanchor="bottom", y=1.02),
         yaxis=dict(range=[0, 100], title="Score"),
     )
-    st.plotly_chart(fig, use_container_width=True)
     st.plotly_chart(chart_theme(fig), use_container_width=True)
     
 
@@ -118,7 +117,6 @@ fig3 = px.line(
     labels={"date_id": "Date", "score": "Stress Score", "city": "City"},
 )
 fig3.update_layout(margin=dict(t=20, b=20))
-st.plotly_chart(fig3, use_container_width=True)
 st.plotly_chart(chart_theme(fig3), use_container_width=True)
 st.divider()
 st.markdown(
