@@ -80,7 +80,6 @@ with col2:
         height=350,
         margin=dict(t=40, b=40),
     )
-    st.plotly_chart(fig2, use_container_width=True)
     st.plotly_chart(chart_theme(fig2), use_container_width=True)
     
 st.subheader("Historical Score by Cluster")
