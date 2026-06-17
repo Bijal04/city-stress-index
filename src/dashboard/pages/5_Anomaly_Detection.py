@@ -11,6 +11,9 @@ st.set_page_config(page_title="Anomaly Detection", page_icon="🚨", layout="wid
 st.title("🚨 Anomaly Detection")
 st.markdown("Unusual stress events detected using Z-Score and Isolation Forest models.")
 
+from src.dashboard.utils.styling import inject_css, chart_theme
+inject_css()
+
 cities      = get_cities()
 city        = st.selectbox("Select city", ["All cities"] + cities)
 city_filter = None if city == "All cities" else city
@@ -46,7 +49,8 @@ if not df_anomalies.empty:
     )
     fig.update_layout(margin=dict(t=20, b=20))
     st.plotly_chart(fig, use_container_width=True)
-
+    st.plotly_chart(chart_theme(fig), use_container_width=True)
+    
     st.subheader("Anomalies by Metric")
     metric_counts = df_anomalies["metric"].value_counts().reset_index()
     metric_counts.columns = ["metric", "count"]
@@ -60,7 +64,7 @@ if not df_anomalies.empty:
         color_continuous_scale=["#2ecc71", "#e74c3c"],
     )
     fig2.update_layout(margin=dict(t=20, b=20), coloraxis_showscale=False)
-    st.plotly_chart(fig2, use_container_width=True)
+    st.plotly_chart(chart_theme(fig2), use_container_width=True)
 
     if city != "All cities":
         st.subheader(f"Stress Score with Anomalies — {city}")
@@ -86,7 +90,7 @@ if not df_anomalies.empty:
 
         fig3.update_layout(height=400, margin=dict(t=20, b=20),
                            yaxis=dict(range=[0, 100]))
-        st.plotly_chart(fig3, use_container_width=True)
+        st.plotly_chart(chart_theme(fig3), use_container_width=True)
 
     st.subheader("Anomaly Log")
     display = df_anomalies[["city", "date_id", "metric", "value", "z_score", "anomaly_type"]].copy()
