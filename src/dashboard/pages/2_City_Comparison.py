@@ -44,7 +44,6 @@ fig.update_layout(
     height=450,
     margin=dict(t=40, b=40),
 )
-st.plotly_chart(fig, use_container_width=True)
 st.plotly_chart(chart_theme(fig), use_container_width=True)
 
 st.subheader("Side-by-Side Component Scores")
@@ -81,5 +80,4 @@ fig2 = px.line(
     labels={"date_id": "Date", "score": "Stress Score"},
 )
 fig2.update_layout(margin=dict(t=20, b=20))
-st.plotly_chart(fig2, use_container_width=True)
 st.plotly_chart(chart_theme(fig2), use_container_width=True)
