@@ -3,4 +3,6 @@ import os
 
 sys.path.append(os.path.dirname(__file__))
 
-from src.dashboard.app import *
+from src.dashboard.app import main
+
+main()
