@@ -47,17 +47,17 @@ if selected_comp:
         id_vars="date_id",
         value_vars=selected_comp,
         var_name="component",
-        value_name="score",
+        value_name="component_score",
     )
     df_melt["component"] = df_melt["component"].map(comp_labels)
 
     fig2 = px.line(
         df_melt,
         x="date_id",
-        y="stress_score",
+        y="component_score",
         color="component",
         height=400,
-        labels={"date_id": "Date", "score": "Score"},
+        labels={"date_id": "Date", "component_score": "Score"},
     )
     fig2.update_layout(margin=dict(t=20, b=20), yaxis=dict(range=[0, 100]))
     st.plotly_chart(fig2, use_container_width=True)
