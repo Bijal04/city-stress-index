@@ -6,6 +6,9 @@ st.set_page_config(page_title="Methodology", page_icon="📋", layout="wide")
 st.title("📋 Methodology")
 st.markdown("How the City Stress Index is calculated.")
 
+from src.dashboard.utils.styling import inject_css, chart_theme
+inject_css()
+
 st.subheader("Data Sources")
 col1, col2, col3, col4, col5 = st.columns(5)
 sources = [
@@ -44,6 +47,7 @@ fig = go.Figure(go.Pie(
 ))
 fig.update_layout(height=350, margin=dict(t=20, b=20))
 st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(chart_theme(fig), use_container_width=True)
 
 st.latex(r"""
 \text{Stress Score} = 0.35 \times \text{Traffic} + 0.25 \times \text{Air Quality} +
