@@ -11,17 +11,20 @@ from src.collectors import (
     numbeo_collector,
     safety_collector,
 )
-from src.etl_loader             import run_etl
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-from src.feature_engineering import run_feature_engineering
-from src.scoring_engine         import run_scoring_engine
+from src.etl_loader              import run_etl
+from src.feature_engineering     import run_feature_engineering
+from src.scoring_engine          import run_scoring_engine
 from src.analytics.run_analytics import run_all_analytics
+from src.data_quality            import run_data_quality_checks
+from src.logger                  import get_logger
+
+logger = get_logger("pipeline")
 
 def run_all():
-    print("=" * 55)
-    print("CITY STRESS INDEX — Daily Pipeline Run")
-    print(f"Date: {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}")
-    print("=" * 55)
+    logger.info("=" * 55)
+    logger.info("CITY STRESS INDEX — Daily Pipeline Run")
+    logger.info(f"Date: {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}")
+    logger.info("=" * 55)
 
     collectors = [
         ("Traffic",     tomtom_collector),
@@ -33,33 +36,36 @@ def run_all():
 
     failed = []
     for name, collector in collectors:
-        print(f"\n--- {name} ---")
+        logger.info(f"Running {name} collector...")
         try:
             collector.run()
+            logger.info(f"{name} collector done.")
         except Exception as e:
-            print(f"FAILED: {e}")
+            logger.error(f"{name} collector FAILED: {e}")
             failed.append(name)
 
-    print("\n--- ETL ---")
+    logger.info("Running ETL...")
     today = datetime.utcnow().strftime("%Y-%m-%d")
     run_etl(date_str=today)
 
-    print("\n--- Feature engineering ---")
+    logger.info("Running feature engineering...")
     run_feature_engineering()
 
-    print("\n--- Scoring engine ---")
+    logger.info("Running scoring engine...")
     run_scoring_engine()
 
-    print("\n--- Analytics suite ---")
+    logger.info("Running analytics suite...")
     run_all_analytics()
 
-    print("\n" + "=" * 55)
+    logger.info("Running data quality checks...")
+    run_data_quality_checks()
+
+    logger.info("=" * 55)
     if failed:
-        print(f"Completed with failures: {', '.join(failed)}")
+        logger.warning(f"Pipeline completed with failures: {', '.join(failed)}")
     else:
-        print("Full pipeline complete.")
-        print("Collect → ETL → Features → Scores → Analytics")
-    print("=" * 55)
+        logger.info("Full pipeline complete. All steps succeeded.")
+    logger.info("=" * 55)
 
 if __name__ == "__main__":
     run_all()
