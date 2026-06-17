@@ -33,7 +33,7 @@ if df.empty:
     st.warning("No data available. Run the pipeline first.")
     st.stop()
 
-latest_date = df["date_id"].max()
+latest_date = df["date_id"].iloc[0]
 st.caption(f"Last updated: {latest_date}")
 
 st.subheader("Today's City Stress Rankings")
@@ -101,13 +101,7 @@ st.divider()
 st.subheader("30-Day Stress Score Trends")
 
 hist_df = get_all_historical_scores()
-
-if hist_df.empty:
-    st.warning("No historical data available.")
-    st.stop()
-
-hist_df["date_id"] = pd.to_datetime(hist_df["date_id"])
-last_30 = hist_df[hist_df["date_id"] >= hist_df["date_id"].max() - pd.Timedelta(days=30)]
+last_30  = hist_df[hist_df["date_id"] >= hist_df["date_id"].max() - pd.Timedelta(days=30)]
 
 fig3 = px.line(
     last_30,
