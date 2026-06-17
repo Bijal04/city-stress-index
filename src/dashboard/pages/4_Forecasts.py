@@ -10,6 +10,9 @@ from src.dashboard.utils.db import get_cities, get_historical_scores, get_foreca
 st.set_page_config(page_title="Forecasts", page_icon="🔮", layout="wide")
 st.title("🔮 Stress Score Forecasts")
 
+from src.dashboard.utils.styling import inject_css, chart_theme
+inject_css()
+
 cities = get_cities()
 city   = st.selectbox("Select city", cities)
 model  = st.radio("Forecast model", ["ARIMA", "Prophet", "Both"], horizontal=True)
@@ -60,6 +63,7 @@ fig.update_layout(
     legend=dict(orientation="h", yanchor="bottom", y=1.02),
 )
 st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(chart_theme(fig), use_container_width=True)
 
 st.subheader("Forecast Values Table")
 if not fc_df.empty:
@@ -92,4 +96,4 @@ if summary_rows:
         range_color=[0, 100],
     )
     fig2.update_layout(margin=dict(t=20, b=20), coloraxis_showscale=False)
-    st.plotly_chart(fig2, use_container_width=True)
+    st.plotly_chart(chart_theme(fig2), use_container_width=True)
