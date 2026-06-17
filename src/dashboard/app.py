@@ -15,6 +15,9 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+from src.dashboard.utils.styling import inject_css, chart_theme
+inject_css()
+
 LABEL_COLORS = {
     "Low":      "#2ecc71",
     "Moderate": "#f39c12",
@@ -77,6 +80,7 @@ with col1:
         yaxis=dict(range=[0, 100], title="Score"),
     )
     st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(chart_theme(fig), use_container_width=True)
     
 
 with col2:
@@ -97,6 +101,7 @@ with col2:
         showlegend=True,
     )
     st.plotly_chart(fig2, use_container_width=True)
+    st.plotly_chart(chart_theme(fig2), use_container_width=True)
 
 st.divider()
 st.subheader("30-Day Stress Score Trends")
@@ -114,7 +119,7 @@ fig3 = px.line(
 )
 fig3.update_layout(margin=dict(t=20, b=20))
 st.plotly_chart(fig3, use_container_width=True)
-
+st.plotly_chart(chart_theme(fig3), use_container_width=True)
 st.divider()
 st.markdown(
     "Built with Python · SQLite · Streamlit · Plotly | "
