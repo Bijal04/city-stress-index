@@ -7,7 +7,7 @@ import os
 
 sys.path.append(os.path.dirname(__file__))
 
-import src.dashboard.app
+import src.dashboard.app  # noqa: F401 (imported for side effects — runs the dashboard)
 
 st.set_page_config(
     page_title="City Stress Index",
