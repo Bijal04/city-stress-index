@@ -10,6 +10,9 @@ from src.dashboard.utils.db import get_cities, get_historical_scores, get_raw_me
 st.set_page_config(page_title="Historical Trends", page_icon="📈", layout="wide")
 st.title("📈 Historical Trends")
 
+from src.dashboard.utils.styling import inject_css, chart_theme
+inject_css()
+
 cities      = get_cities()
 city        = st.selectbox("Select city", cities)
 period      = st.selectbox("Time period", ["30 days", "90 days", "180 days", "1 year", "All time"])
@@ -29,6 +32,7 @@ fig.add_hrect(y0=50, y1=75, fillcolor="orange", opacity=0.05, line_width=0)
 fig.add_hrect(y0=75, y1=100,fillcolor="red",    opacity=0.05, line_width=0)
 fig.update_layout(margin=dict(t=20, b=20), yaxis=dict(range=[0, 100]))
 st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(chart_theme(fig), use_container_width=True)
 
 st.subheader("Component Score Trends")
 components  = ["traffic_score", "air_quality_score", "weather_score", "safety_score", "cost_score"]
@@ -61,6 +65,7 @@ if selected_comp:
     )
     fig2.update_layout(margin=dict(t=20, b=20), yaxis=dict(range=[0, 100]))
     st.plotly_chart(fig2, use_container_width=True)
+    st.plotly_chart(chart_theme(fig2), use_container_width=True)
 
 st.subheader("Raw Metrics")
 df_raw = get_raw_metrics(city)
@@ -76,6 +81,7 @@ fig3 = px.line(df_raw, x="date_id", y=metric, height=300,
                labels={"date_id": "Date", metric: metric.replace("_", " ").title()})
 fig3.update_layout(margin=dict(t=20, b=20))
 st.plotly_chart(fig3, use_container_width=True)
+st.plotly_chart(chart_theme(fig3), use_container_width=True)
 
 st.subheader("Monthly Average Scores")
 df["month"] = df["date_id"].dt.to_period("M").astype(str)
@@ -85,3 +91,4 @@ fig4 = px.bar(monthly, x="month", y="avg_score", height=300,
               labels={"month": "Month", "avg_score": "Avg Stress Score"})
 fig4.update_layout(margin=dict(t=20, b=20))
 st.plotly_chart(fig4, use_container_width=True)
+st.plotly_chart(chart_theme(fig4), use_container_width=True)
