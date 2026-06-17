@@ -31,7 +31,6 @@ fig.add_hrect(y0=25, y1=50, fillcolor="yellow", opacity=0.05, line_width=0)
 fig.add_hrect(y0=50, y1=75, fillcolor="orange", opacity=0.05, line_width=0)
 fig.add_hrect(y0=75, y1=100,fillcolor="red",    opacity=0.05, line_width=0)
 fig.update_layout(margin=dict(t=20, b=20), yaxis=dict(range=[0, 100]))
-st.plotly_chart(fig, use_container_width=True)
 st.plotly_chart(chart_theme(fig), use_container_width=True)
 
 st.subheader("Component Score Trends")
@@ -64,7 +63,6 @@ if selected_comp:
         labels={"date_id": "Date", "component_score": "Score"},
     )
     fig2.update_layout(margin=dict(t=20, b=20), yaxis=dict(range=[0, 100]))
-    st.plotly_chart(fig2, use_container_width=True)
     st.plotly_chart(chart_theme(fig2), use_container_width=True)
 
 st.subheader("Raw Metrics")
@@ -80,7 +78,6 @@ metric = st.selectbox("Select raw metric", [
 fig3 = px.line(df_raw, x="date_id", y=metric, height=300,
                labels={"date_id": "Date", metric: metric.replace("_", " ").title()})
 fig3.update_layout(margin=dict(t=20, b=20))
-st.plotly_chart(fig3, use_container_width=True)
 st.plotly_chart(chart_theme(fig3), use_container_width=True)
 
 st.subheader("Monthly Average Scores")
@@ -90,5 +87,4 @@ monthly.columns = ["month", "avg_score"]
 fig4 = px.bar(monthly, x="month", y="avg_score", height=300,
               labels={"month": "Month", "avg_score": "Avg Stress Score"})
 fig4.update_layout(margin=dict(t=20, b=20))
-st.plotly_chart(fig4, use_container_width=True)
 st.plotly_chart(chart_theme(fig4), use_container_width=True)
