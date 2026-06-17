@@ -10,6 +10,9 @@ from src.dashboard.utils.db import get_rankings_history, get_latest_scores
 st.set_page_config(page_title="Rankings", page_icon="🏆", layout="wide")
 st.title("🏆 City Stress Rankings")
 
+from src.dashboard.utils.styling import inject_css, chart_theme
+inject_css()
+
 LABEL_COLORS = {
     "Low": "#2ecc71", "Moderate": "#f39c12",
     "High": "#e67e22", "Critical": "#e74c3c",
@@ -50,6 +53,7 @@ if not df_hist.empty:
     fig.update_yaxes(autorange="reversed", tickvals=[1, 2, 3, 4, 5])
     fig.update_layout(margin=dict(t=20, b=20))
     st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(chart_theme(fig), use_container_width=True)
 
 st.subheader("Score Distribution by City")
 if not df_hist.empty:
@@ -63,3 +67,4 @@ if not df_hist.empty:
     )
     fig2.update_layout(showlegend=False, margin=dict(t=20, b=20))
     st.plotly_chart(fig2, use_container_width=True)
+    st.plotly_chart(chart_theme(fig2), use_container_width=True)
