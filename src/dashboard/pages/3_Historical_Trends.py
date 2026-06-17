@@ -54,7 +54,7 @@ if selected_comp:
     fig2 = px.line(
         df_melt,
         x="date_id",
-        y="score",
+        y="stress_score",
         color="component",
         height=400,
         labels={"date_id": "Date", "score": "Score"},
