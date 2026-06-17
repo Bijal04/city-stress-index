@@ -52,7 +52,6 @@ if not df_hist.empty:
     )
     fig.update_yaxes(autorange="reversed", tickvals=[1, 2, 3, 4, 5])
     fig.update_layout(margin=dict(t=20, b=20))
-    st.plotly_chart(fig, use_container_width=True)
     st.plotly_chart(chart_theme(fig), use_container_width=True)
 
 st.subheader("Score Distribution by City")
@@ -66,5 +65,4 @@ if not df_hist.empty:
         labels={"score": "Stress Score", "city": "City"},
     )
     fig2.update_layout(showlegend=False, margin=dict(t=20, b=20))
-    st.plotly_chart(fig2, use_container_width=True)
     st.plotly_chart(chart_theme(fig2), use_container_width=True)
