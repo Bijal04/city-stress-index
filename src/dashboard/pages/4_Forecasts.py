@@ -62,7 +62,6 @@ fig.update_layout(
     xaxis=dict(title="Date"),
     legend=dict(orientation="h", yanchor="bottom", y=1.02),
 )
-st.plotly_chart(fig, use_container_width=True)
 st.plotly_chart(chart_theme(fig), use_container_width=True)
 
 st.subheader("Forecast Values Table")
