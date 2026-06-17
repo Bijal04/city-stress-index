@@ -1,0 +1,45 @@
+name: Daily City Stress Pipeline
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Create .env file
+        run: |
+          echo "TOMTOM_API_KEY=${{ secrets.TOMTOM_API_KEY }}" >> .env
+          echo "OPENWEATHER_API_KEY=${{ secrets.OPENWEATHER_API_KEY }}" >> .env
+          echo "OPENAQ_API_KEY=${{ secrets.OPENAQ_API_KEY }}" >> .env
+
+      - name: Run data quality checks
+        run: python src/data_quality.py
+
+      - name: Run tests
+        run: pytest tests/ -v
+
+      - name: Run full pipeline
+        run: python src/collectors/run_all.py
+
+      - name: Upload logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pipeline-logs
+          path: logs/
+          retention-days: 7
