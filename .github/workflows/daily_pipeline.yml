@@ -27,11 +27,25 @@ jobs:
           echo "OPENWEATHER_API_KEY=${{ secrets.OPENWEATHER_API_KEY }}" >> .env
           echo "OPENAQ_API_KEY=${{ secrets.OPENAQ_API_KEY }}" >> .env
 
-      - name: Run data quality checks
-        run: python src/data_quality.py
+      - name: Create data directories
+        run: |
+          mkdir -p data/raw/traffic data/raw/airquality data/raw/weather data/raw/cost data/raw/safety
+          mkdir -p logs
+
+      - name: Initialize database
+        run: python src/database.py
+
+      - name: Load dimensions
+        run: python src/load_dimensions.py
+
+      - name: Run historical backfill
+        run: python src/run_backfill.py
 
       - name: Run tests
         run: pytest tests/ -v
+
+      - name: Run data quality checks
+        run: python src/data_quality.py
 
       - name: Run full pipeline
         run: python src/collectors/run_all.py
