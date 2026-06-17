@@ -46,7 +46,6 @@ fig = go.Figure(go.Pie(
     marker_colors=["#378ADD", "#1D9E75", "#BA7517", "#E24B4A", "#7F77DD"],
 ))
 fig.update_layout(height=350, margin=dict(t=20, b=20))
-st.plotly_chart(fig, use_container_width=True)
 st.plotly_chart(chart_theme(fig), use_container_width=True)
 
 st.latex(r"""
