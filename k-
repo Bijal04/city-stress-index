@@ -1,0 +1,235 @@
+[33mcommit 754d60807c983601d7a7fd4222d2c35c4b15f1a9[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: Bijal <panchalbijal249@gmail.com>
+Date:   Wed Jun 17 18:02:47 2026 -0400
+
+    Update example secrets.toml with actual API keys
+
+ .streamlit/secrets.toml.example | 6 [32m+++[m[31m---[m
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+[33mcommit 605cf2e77d6ee5b9707f38824a2365881424cdf2[m
+Merge: b2473cb 5628317
+Author: Bijal <panchalbijal249@gmail.com>
+Date:   Wed Jun 17 17:57:28 2026 -0400
+
+    Merge branch 'main' of https://github.com/bijal04/city-stress-index
+
+[33mcommit 5628317f0aa3d7e5b23d1114e8f4c0c821632017[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Bijal Panchal <98029696+Bijal04@users.noreply.github.com>
+Date:   Wed Jun 17 17:56:14 2026 -0400
+
+    Added Dev Container Folder
+
+ .devcontainer/devcontainer.json | 33 [32m+++++++++++++++++++++++++++++++++[m
+ 1 file changed, 33 insertions(+)
+
+[33mcommit b2473cb4c3062ee862d39a16a507f3906be3cad7[m
+Author: Bijal <panchalbijal249@gmail.com>
+Date:   Wed Jun 17 17:54:46 2026 -0400
+
+    Reset example API keys in secrets.toml.example to placeholders
+
+ .streamlit/secrets.toml.example | 6 [32m+++[m[31m---[m
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+[33mcommit 5c3c272253c75319d2b7e2f05ed5fb72baa1dd44[m
+Author: Bijal <panchalbijal249@gmail.com>
+Date:   Wed Jun 17 17:53:39 2026 -0400
+
+    Update example secrets.toml with actual API keys
+
+ .streamlit/secrets.toml.example | 6 [32m+++[m[31m---[m
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+[33mcommit 9095efe11750dc1bc5ce86331987edef91c8b96a[m
+Merge: 44c9e2a ce17a96
+Author: Bijal <panchalbijal249@gmail.com>
+Date:   Wed Jun 17 17:50:47 2026 -0400
+
+    Merge branch 'main' of https://github.com/bijal04/city-stress-index
+
+[33mcommit 44c9e2ad71fbd8642ed4c8a5fdfc343930b3ed6a[m
+Author: Bijal <panchalbijal249@gmail.com>
+Date:   Wed Jun 17 17:50:35 2026 -0400
+
+    Add city_stress.db database file for data storage
+
+ data/city_stress.db | Bin [31m0[m -> [32m4677632[m bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+[33mcommit 793e8590f43a53beb93ab3b3dd1e40711206f2b4[m
+Author: Bijal <panchalbijal249@gmail.com>
+Date:   Wed Jun 17 17:50:29 2026 -0400
+
+    Add example secrets.toml file for API key configuration
+
+ .streamlit/secrets.toml.example | 3 [32m+++[m
+ 1 file changed, 3 insertions(+)
+
+[33mcommit 0f674e72a163aa7e7e6b5005053e58e265eb7317[m
+Author: Bijal <panchalbijal249@gmail.com>
+Date:   Wed Jun 17 17:50:21 2026 -0400
+
+    Add libgomp1 to Streamlit packages for improved compatibility
+
+ .streamlit/packages.txt | 1 [32m+[m
+ 1 file changed, 1 insertion(+)
+
+[33mcommit 5ce5164bfe69776abc350678eb54425728bd0040[m
+Author: Bijal <panchalbijal249@gmail.com>
+Date:   Wed Jun 17 17:50:10 2026 -0400
+
+    Add configuration file for Streamlit application settings
+
+ .streamlit/config.toml | 13 [32m+++++++++++++[m
+ 1 file changed, 13 insertions(+)
+
+[33mcommit b62af26b2c0aa214bc8748d1da3c9fc90021ab81[m
+Author: Bijal <panchalbijal249@gmail.com>
+Date:   Wed Jun 17 17:49:56 2026 -0400
+
+    Add streamlit_app.py to initialize the Streamlit application and set up the environment
+
+ streamlit_app.py | 6 [32m++++++[m
+ 1 file changed, 6 insertions(+)
+
+[33mcommit 0ef273e6127f7a06cd580f1b86562360e9501b64[m
+Author: Bijal <panchalbijal249@gmail.com>
+Date:   Wed Jun 17 17:49:44 2026 -0400
+
+    Update README.md to enhance project documentation and provide detailed insights into the City Stress Index functionality, architecture, data sources, analytics models, and local setup instructions.
+
+ README.md | 288 [32m+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++[m[31m-[m
+ 1 file changed, 287 insertions(+), 1 deletion(-)
+
+[33mcommit e19f0b9b8f301d0e04194099433205d39deb8837[m
+Author: Bijal <panchalbijal249@gmail.com>
+Date:   Wed Jun 17 17:49:34 2026 -0400
+
+    Update .gitignore to include city_stress.db and secrets.toml for Streamlit
+
+ .gitignore | 3 [32m++[m[31m-[m
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+[33mcommit ce17a96e5c44e0bb4de45b1ad7e5450627ee16a3[m
+Author: Bijal Panchal <98029696+Bijal04@users.noreply.github.com>
+Date:   Wed Jun 17 17:29:00 2026 -0400
+
+    Delete .streamlit
+
+ .streamlit | 1 [31m-[m
+ 1 file changed, 1 deletion(-)
+
+[33mcommit d21a98d0c09f8d85ec1ff78d5efcf58aac46d8f3[m
+Author: Bijal Panchal <98029696+Bijal04@users.noreply.github.com>
+Date:   Wed Jun 17 17:28:24 2026 -0400
+
+    Create .streamlit
+
+ .streamlit | 1 [32m+[m
+ 1 file changed, 1 insertion(+)
+
+[33mcommit 5704b9913d51dca02c849b6b34c485d1779af4c0[m
+Author: Bijal Panchal <98029696+Bijal04@users.noreply.github.com>
+Date:   Wed Jun 17 17:28:08 2026 -0400
+
+    Delete .streamlit
+
+ .streamlit | 1 [31m-[m
+ 1 file changed, 1 deletion(-)
+
+[33mcommit 9d7714c853619295a7e1a09fea5079b9ffe44891[m
+Author: Bijal Panchal <98029696+Bijal04@users.noreply.github.com>
+Date:   Wed Jun 17 17:26:39 2026 -0400
+
+    Create .streamlit
+
+ .streamlit | 1 [32m+[m
+ 1 file changed, 1 insertion(+)
+
+[33mcommit 5c634f89dbe414f5d412e4f96a7476149b53da9c[m
+Author: Bijal <panchalbijal249@gmail.com>
+Date:   Wed Jun 17 17:18:33 2026 -0400
+
+    Refactor daily pipeline steps for improved clarity and organization
+
+ .github/workflows/daily_pipeline.yml | 38 [32m++++++++++++++++++++++++++++[m[31m--------[m
+ 1 file changed, 30 insertions(+), 8 deletions(-)
+
+[33mcommit 07c3114596ec2cf90369189a8e6ab44c7ac336d8[m
+Author: Bijal <panchalbijal249@gmail.com>
+Date:   Wed Jun 17 17:14:19 2026 -0400
+
+    Reorder steps in daily pipeline for improved clarity and execution flow
+
+ .github/workflows/daily_pipeline.yml | 18 [32m++++++++++++++++[m[31m--[m
+ 1 file changed, 16 insertions(+), 2 deletions(-)
+
+[33mcommit 474e990789634b8a7845ffbb4fd241a7034f2991[m
+Author: Bijal <panchalbijal249@gmail.com>
+Date:   Wed Jun 17 17:11:02 2026 -0400
+
+    Add unit tests for scoring engine normalization and stress label functions
+
+ tests/test_scoring.py | 51 [32m+++++++++++++++++++++++++++++++++++++++++++++++++++[m
+ 1 file changed, 51 insertions(+)
+
+[33mcommit 5851bd9bcdfac6900abd3aa12b056fe9dda75c54[m
+Author: Bijal <panchalbijal249@gmail.com>
+Date:   Wed Jun 17 17:10:54 2026 -0400
+
+    Add comprehensive database tests for city stress index
+
+ tests/test_database.py | 95 [32m++++++++++++++++++++++++++++++++++++++++++++++++++[m
+ 1 file changed, 95 insertions(+)
+
+[33mcommit b2512f02e248b0d93373d6b2272a461e5edae97b[m
+Author: Bijal <panchalbijal249@gmail.com>
+Date:   Wed Jun 17 17:10:46 2026 -0400
+
+    Add unit tests for city configuration and static cost data validation
+
+ tests/test_collectors.py | 43 [32m+++++++++++++++++++++++++++++++++++++++++++[m
+ 1 file changed, 43 insertions(+)
+
+[33mcommit 659f5e5ac0dff1d2338d295f837aa0ba0e9dfe66[m
+Author: Bijal <panchalbijal249@gmail.com>
+Date:   Wed Jun 17 17:10:37 2026 -0400
+
+    Refactor logging in pipeline run to use logger instead of print statements
+
+ src/collectors/run_all.py | 44 [32m+++++++++++++++++++++++++[m[31m-------------------[m
+ 1 file changed, 25 insertions(+), 19 deletions(-)
+
+[33mcommit 52ba5ef7df4310c97e03489111f2200d860fa71e[m
+Author: Bijal <panchalbijal249@gmail.com>
+Date:   Wed Jun 17 17:10:28 2026 -0400
+
+    Add logger implementation for logging pipeline activities
+
+ src/logger.py | 31 [32m+++++++++++++++++++++++++++++++[m
+ 1 file changed, 31 insertions(+)
+
+[33mcommit 0fd69a29c0fdef8664aefee1efd7d0f475af1d14[m
+Author: Bijal <panchalbijal249@gmail.com>
+Date:   Wed Jun 17 17:10:20 2026 -0400
+
+    Add data quality checks for city metrics and stress scores
+
+ src/data_quality.py | 140 [32m++++++++++++++++++++++++++++++++++++++++++++++++++++[m
+ 1 file changed, 140 insertions(+)
+
+[33mcommit 107f485a19d593d575a5c897c82fadd447e76bf6[m
+Author: Bijal <panchalbijal249@gmail.com>
+Date:   Wed Jun 17 17:10:06 2026 -0400
+
+    Add .gitkeep file to logs directory for version control
+
+ logs/.gitkeep | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+[33mcommit e5eb0c09e06f59a12ee605ee2c1ff0d1d6f8b371[m
+Author: Bijal <panchalbijal249@gmail.com>
+Date:   Wed Jun 17 17:09:53 2026 -0400
+
+    Update weather data timestamps and metrics for multiple c
