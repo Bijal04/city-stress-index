@@ -41,11 +41,12 @@ for model_name, group in fc_df.groupby("model"):
         name=f"{model_name} Forecast",
         line=dict(color=color, width=2, dash="dash"),
     ))
+    fill_colors = {"ARIMA": "rgba(226,75,74,0.15)", "Prophet": "rgba(29,158,117,0.15)"}
     fig.add_trace(go.Scatter(
         x=pd.concat([group["forecast_date"], group["forecast_date"].iloc[::-1]]),
         y=pd.concat([group["upper_bound"], group["lower_bound"].iloc[::-1]]),
         fill="toself",
-        fillcolor=color.replace(")", ", 0.1)").replace("rgb", "rgba") if "rgb" in color else color + "20",
+        fillcolor=fill_colors.get(model_name, "rgba(128,128,128,0.15)"),
         line=dict(color="rgba(255,255,255,0)"),
         name=f"{model_name} confidence",
         showlegend=False,
