@@ -10,6 +10,9 @@ from src.dashboard.utils.db import get_cities, get_latest_scores, get_historical
 st.set_page_config(page_title="City Comparison", page_icon="🏙️", layout="wide")
 st.title("🏙️ City Comparison")
 
+from src.dashboard.utils.styling import inject_css, chart_theme
+inject_css()
+
 cities   = get_cities()
 selected = st.multiselect("Select cities to compare", cities, default=cities[:2])
 
@@ -42,6 +45,7 @@ fig.update_layout(
     margin=dict(t=40, b=40),
 )
 st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(chart_theme(fig), use_container_width=True)
 
 st.subheader("Side-by-Side Component Scores")
 col_pairs = st.columns(len(selected))
@@ -78,3 +82,4 @@ fig2 = px.line(
 )
 fig2.update_layout(margin=dict(t=20, b=20))
 st.plotly_chart(fig2, use_container_width=True)
+st.plotly_chart(chart_theme(fig2), use_container_width=True)
