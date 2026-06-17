@@ -48,7 +48,6 @@ if not df_anomalies.empty:
         labels={"date_id": "Date", "value": "Metric Value"},
     )
     fig.update_layout(margin=dict(t=20, b=20))
-    st.plotly_chart(fig, use_container_width=True)
     st.plotly_chart(chart_theme(fig), use_container_width=True)
     
     st.subheader("Anomalies by Metric")
