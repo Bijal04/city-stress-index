@@ -55,7 +55,6 @@ with col1:
     )
     fig.update_traces(texttemplate="%{text:.1f}", textposition="outside")
     fig.update_layout(margin=dict(t=20, b=20), yaxis=dict(range=[0, 100]))
-    st.plotly_chart(fig, use_container_width=True)
     st.plotly_chart(chart_theme(fig), use_container_width=True)
 
 with col2:
