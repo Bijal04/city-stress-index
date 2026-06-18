@@ -2,7 +2,7 @@
 
 A real-time urban health intelligence platform that scores city stress daily across 5 global cities using a weighted composite index built from traffic, air quality, weather, cost of living, and safety data.
 
-**Live Dashboard →** [city-stress-index.streamlit.app](https://city-stress-index.streamlit.app)
+**Live Dashboard →** [city-stress-index.streamlit.app](https://city-stress-index-va7b5rezdzgxw4zjaxb8ld.streamlit.app)
 
 ---
 
