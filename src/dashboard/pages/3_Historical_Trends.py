@@ -64,6 +64,8 @@ if selected_comp:
     )
     fig2.update_layout(margin=dict(t=20, b=20), yaxis=dict(range=[0, 100]))
     st.plotly_chart(chart_theme(fig2), use_container_width=True)
+    st.caption("ℹ️ Safety and Cost are largely static estimates rather than daily time-series data — see the Methodology page for details.")
+
 
 st.subheader("Raw Metrics")
 df_raw = get_raw_metrics(city)
