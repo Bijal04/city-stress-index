@@ -99,7 +99,6 @@ with col2:
         yaxis=dict(range=[0, 110], title="Stress Score"),
         showlegend=True,
     )
-    st.plotly_chart(fig2, use_container_width=True)
     st.plotly_chart(chart_theme(fig2), use_container_width=True)
 
 st.divider()
