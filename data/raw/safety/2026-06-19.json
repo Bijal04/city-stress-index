@@ -1,35 +1,35 @@
 [
   {
     "city": "Toronto",
-    "timestamp": "2026-06-19T02:35:31.542444",
+    "timestamp": "2026-06-19T10:22:05.213265",
     "crime_score": 50.0,
     "incident_count_30d": 100,
     "source": "api"
   },
   {
     "city": "New York",
-    "timestamp": "2026-06-19T02:35:32.094333",
+    "timestamp": "2026-06-19T10:22:06.416750",
     "crime_score": 50.0,
     "incident_count_30d": 100,
     "source": "api"
   },
   {
     "city": "London",
-    "timestamp": "2026-06-19T02:35:32.094416",
+    "timestamp": "2026-06-19T10:22:06.416832",
     "crime_score": 45,
     "incident_count_30d": null,
     "source": "static_estimate"
   },
   {
     "city": "Mumbai",
-    "timestamp": "2026-06-19T02:35:32.094420",
+    "timestamp": "2026-06-19T10:22:06.416836",
     "crime_score": 60,
     "incident_count_30d": null,
     "source": "static_estimate"
   },
   {
     "city": "Tokyo",
-    "timestamp": "2026-06-19T02:35:32.094424",
+    "timestamp": "2026-06-19T10:22:06.416839",
     "crime_score": 15,
     "incident_count_30d": null,
     "source": "static_estimate"
