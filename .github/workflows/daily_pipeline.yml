@@ -12,6 +12,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -42,35 +45,43 @@ jobs:
           mkdir -p data/raw/safety
           mkdir -p logs
 
-      - name: Step 1 - Create database tables
-        run: python src/database.py
+      - name: Verify database exists
+        run: |
+          if [ -f "data/city_stress.db" ]; then
+            echo "Database found. Checking tables..."
+            python -c "import sqlite3; conn = sqlite3.connect('data/city_stress.db'); cur = conn.cursor(); cur.execute('SELECT COUNT(*) FROM fact_city_metrics'); print('Existing rows:', cur.fetchone()[0]); conn.close()"
+          else
+            echo "Database not found. Building from scratch..."
+            python src/database.py
+            python src/load_dimensions.py
+            python src/run_backfill.py
+            python src/feature_engineering.py
+            python src/scoring_engine.py
+            python src/analytics/run_analytics.py
+          fi
 
-      - name: Step 2 - Load dimension tables
-        run: python src/load_dimensions.py
-
-      - name: Step 3 - Historical backfill
-        run: python src/run_backfill.py
-
-      - name: Step 4 - Verify database was created correctly
-        run: python -c "import sqlite3; conn = sqlite3.connect('data/city_stress.db'); cur = conn.cursor(); cur.execute('SELECT COUNT(*) FROM fact_city_metrics'); print('fact_city_metrics rows:', cur.fetchone()[0]); conn.close()"
-
-      - name: Step 5 - Run feature engineering
-        run: python src/feature_engineering.py
-
-      - name: Step 6 - Run scoring engine
-        run: python src/scoring_engine.py
-
-      - name: Step 7 - Run analytics
-        run: python src/analytics/run_analytics.py
-
-      - name: Step 8 - Run tests
+      - name: Run tests
         run: pytest tests/ -v
 
-      - name: Step 9 - Run data quality checks
+      - name: Run data quality checks
         run: python src/data_quality.py
 
-      - name: Step 10 - Run daily collectors
+      - name: Run daily collectors
         run: python src/collectors/run_all.py
+
+      - name: Configure git
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+
+      - name: Commit updated database and data
+        run: |
+          git add data/city_stress.db
+          git add data/raw/
+          git diff --staged --quiet || git commit -m "data: automated daily collection $(date -u '+%Y-%m-%d')"
+
+      - name: Push changes
+        run: git push origin main
 
       - name: Upload logs
         uses: actions/upload-artifact@v4
