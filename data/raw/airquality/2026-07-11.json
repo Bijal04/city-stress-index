@@ -1,0 +1,42 @@
+[
+  {
+    "city": "Toronto",
+    "timestamp": "2026-07-11T07:49:43.184891",
+    "avg_pm25": 15.6,
+    "avg_no2": 0.01,
+    "aqi_estimate": 100,
+    "source": "api"
+  },
+  {
+    "city": "New York",
+    "timestamp": "2026-07-11T07:49:43.996338",
+    "avg_pm25": 8.84,
+    "avg_no2": null,
+    "aqi_estimate": 50,
+    "source": "api"
+  },
+  {
+    "city": "London",
+    "timestamp": "2026-07-11T07:49:45.172528",
+    "avg_pm25": 7.6,
+    "avg_no2": 18.8,
+    "aqi_estimate": 50,
+    "source": "api"
+  },
+  {
+    "city": "Mumbai",
+    "timestamp": "2026-07-11T07:49:46.130101",
+    "avg_pm25": 224.64,
+    "avg_no2": 31.57,
+    "aqi_estimate": 300,
+    "source": "api"
+  },
+  {
+    "city": "Tokyo",
+    "timestamp": "2026-07-11T07:49:47.322755",
+    "avg_pm25": 8.4,
+    "avg_no2": 0.01,
+    "aqi_estimate": 50,
+    "source": "api"
+  }
+]
