@@ -464,7 +464,7 @@ footer{
     </div>
     <div class="stats">
       <div class="stat">
-        <span class="stat-val" data-count="10">0</span>
+        <span class="stat-val" data-count="5">0</span>
         <span class="stat-label">Cities tracked</span>
       </div>
       <div class="stat">
@@ -481,10 +481,7 @@ footer{
       </div>
     </div>
   </div>
-  <div class="hero-scroll">
-    <span class="scroll-text">Scroll</span>
-    <div class="scroll-line"></div>
-  </div>
+
 </section>
 
 <!-- SKYLINE -->
@@ -760,6 +757,9 @@ const io = new IntersectionObserver((entries)=>{
 document.querySelectorAll('.reveal,.factor-card,.score-card,.glass-card').forEach(el=>io.observe(el));
 
 /* ── Stat counters on load ── */
+document.getElementById('city-count').textContent='5';
+document.getElementById('update-time').textContent=
+  new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
 setTimeout(()=>{
   document.querySelectorAll('.stat-val[data-count]').forEach(el=>{
     countUp(el,parseInt(el.dataset.count),1500);
