@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>City Stress Index</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#080D1A;
+  --navy2:#0D1829;
+  --navy3:#111827;
+  --blue:#6382C9;
+  --gold:#E8A838;
+  --gold2:#F2C96A;
+  --text:#EEF2FF;
+  --muted:#4A5568;
+  --sub:#8892AA;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--navy);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  overflow-x:hidden;
+}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 60px;
+  background:rgba(8,13,26,0.85);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(99,130,201,0.1);
+  transition:all 0.3s ease;
+}
+.nav-logo{
+  font-family:'Syne',sans-serif;
+  font-size:1.1rem;font-weight:800;
+  color:var(--text);
+  letter-spacing:-0.5px;
+}
+.nav-logo span{color:var(--gold)}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{
+  color:var(--sub);font-size:13px;font-weight:500;
+  text-decoration:none;letter-spacing:0.3px;
+  transition:color 0.2s;
+}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{
+  background:var(--gold);color:#080D1A;
+  border:none;border-radius:8px;
+  padding:9px 20px;
+  font-family:'DM Sans',sans-serif;
+  font-size:13px;font-weight:500;
+  cursor:pointer;text-decoration:none;
+  transition:all 0.2s ease;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.nav-cta:hover{background:var(--gold2);transform:translateY(-1px)}
+
+/* HERO */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;
+  padding:120px 40px 80px;
+  position:relative;
+  overflow:hidden;
+}
+canvas#bg{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  pointer-events:none;
+}
+.hero-inner{position:relative;z-index:2;max-width:800px}
+.live-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(232,168,56,0.1);
+  border:1px solid rgba(232,168,56,0.25);
+  border-radius:20px;padding:6px 16px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--gold);
+  letter-spacing:1.5px;text-transform:uppercase;
+  margin-bottom:28px;
+  animation:fadeUp 0.8s ease both;
+}
+.live-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:#2ecc71;
+  animation:pulse-dot 1.5s ease-in-out infinite;
+}
+@keyframes pulse-dot{
+  0%,100%{box-shadow:0 0 0 0 rgba(46,204,113,0.4)}
+  50%{box-shadow:0 0 0 6px rgba(46,204,113,0)}
+}
+h1.hero-title{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(2.8rem,6vw,5rem);
+  font-weight:800;line-height:1.05;
+  letter-spacing:-1.5px;
+  margin-bottom:24px;
+  animation:fadeUp 0.8s ease 0.1s both;
+}
+h1.hero-title .gold{
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold2) 50%,var(--gold) 100%);
+  background-size:200% auto;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:shimmer 3s linear infinite;
+}
+@keyframes shimmer{
+  0%{background-position:0% center}
+  100%{background-position:200% center}
+}
+.hero-sub{
+  font-size:1.05rem;color:var(--sub);
+  line-height:1.8;max-width:560px;margin:0 auto 40px;
+  font-weight:300;
+  animation:fadeUp 0.8s ease 0.2s both;
+}
+.hero-cta-group{
+  display:flex;align-items:center;gap:16px;
+  justify-content:center;
+  animation:fadeUp 0.8s ease 0.3s both;
+}
+.btn-primary{
+  background:var(--gold);color:#080D1A;
+  border:none;border-radius:10px;
+  padding:14px 32px;
+  font-family:'DM Sans',sans-serif;
+  font-size:15px;font-weight:500;
+  cursor:pointer;text-decoration:none;
+  transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  display:inline-flex;align-items:center;gap:8px;
+}
+.btn-primary:hover{
+  background:var(--gold2);
+  transform:translateY(-3px) scale(1.02);
+  box-shadow:0 12px 32px rgba(232,168,56,0.3);
+}
+.btn-secondary{
+  color:var(--sub);
+  border:1px solid rgba(99,130,201,0.25);
+  border-radius:10px;
+  padding:14px 28px;
+  font-family:'DM Sans',sans-serif;
+  font-size:15px;font-weight:400;
+  cursor:pointer;text-decoration:none;
+  transition:all 0.2s ease;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.btn-secondary:hover{
+  color:var(--text);
+  border-color:rgba(99,130,201,0.5);
+  transform:translateY(-2px);
+}
+.hero-scroll{
+  position:absolute;bottom:40px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  animation:fadeUp 1s ease 0.6s both;
+}
+.scroll-text{
+  font-size:11px;color:var(--muted);
+  letter-spacing:2px;text-transform:uppercase;
+  font-family:'JetBrains Mono',monospace;
+}
+.scroll-line{
+  width:1px;height:40px;
+  background:linear-gradient(to bottom,rgba(99,130,201,0.4),transparent);
+  animation:scrollAnim 1.5s ease-in-out infinite;
+}
+@keyframes scrollAnim{
+  0%,100%{transform:scaleY(1);opacity:1}
+  50%{transform:scaleY(0.5);opacity:0.3}
+}
+
+/* STATS */
+.stats{
+  display:flex;justify-content:center;gap:0;
+  margin-top:64px;
+  animation:fadeUp 0.8s ease 0.4s both;
+}
+.stat{
+  padding:0 48px;
+  border-right:1px solid rgba(99,130,201,0.15);
+  text-align:center;
+}
+.stat:last-child{border-right:none}
+.stat-val{
+  font-family:'JetBrains Mono',monospace;
+  font-size:2rem;font-weight:600;
+  color:var(--text);display:block;
+}
+.stat-label{
+  font-size:11px;color:var(--muted);
+  text-transform:uppercase;letter-spacing:1.5px;
+  margin-top:4px;display:block;
+}
+
+/* SKYLINE */
+.skyline-section{
+  position:relative;height:180px;overflow:hidden;
+  margin-top:-2px;
+}
+canvas#skyline{width:100%;height:100%}
+
+/* SECTION */
+section{padding:100px 60px}
+.section-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--gold);
+  letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:16px;display:block;
+}
+.section-title{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(1.8rem,3vw,2.6rem);
+  font-weight:800;letter-spacing:-0.5px;
+  line-height:1.2;margin-bottom:16px;
+}
+.section-sub{
+  color:var(--sub);font-size:1rem;
+  line-height:1.8;max-width:500px;
+  font-weight:300;
+}
+
+/* FACTORS */
+.factors{background:var(--navy2);padding:100px 60px}
+.factors-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:20px;margin-top:60px;
+}
+.factor-card{
+  background:rgba(13,24,41,0.8);
+  border:1px solid rgba(99,130,201,0.12);
+  border-radius:16px;padding:28px 24px;
+  transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  cursor:default;
+  opacity:0;transform:translateY(30px);
+}
+.factor-card.visible{opacity:1;transform:translateY(0)}
+.factor-card:hover{
+  transform:translateY(-8px);
+  border-color:rgba(232,168,56,0.3);
+  background:rgba(15,26,46,0.9);
+}
+.factor-icon{
+  width:44px;height:44px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;margin-bottom:16px;
+}
+.factor-name{
+  font-family:'Syne',sans-serif;
+  font-size:1rem;font-weight:700;
+  margin-bottom:8px;
+}
+.factor-desc{
+  font-size:13px;color:var(--sub);
+  line-height:1.7;font-weight:300;
+}
+.factor-score-bar{
+  margin-top:16px;height:3px;
+  background:rgba(99,130,201,0.1);
+  border-radius:2px;overflow:hidden;
+}
+.factor-score-fill{
+  height:100%;border-radius:2px;
+  width:0%;transition:width 1.2s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* SCORE COUNTERS */
+.scores-section{padding:100px 60px;text-align:center}
+.scores-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:20px;margin-top:60px;max-width:900px;margin-left:auto;margin-right:auto;
+}
+.score-card{
+  background:rgba(13,24,41,0.6);
+  border:1px solid rgba(99,130,201,0.1);
+  border-radius:20px;padding:32px 20px;
+  position:relative;overflow:hidden;
+  opacity:0;transform:scale(0.9);
+  transition:all 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+.score-card.visible{opacity:1;transform:scale(1)}
+.score-card::before{
+  content:'';position:absolute;
+  top:0;left:0;right:0;height:3px;
+  border-radius:20px 20px 0 0;
+}
+.score-city{
+  font-size:11px;color:var(--muted);
+  text-transform:uppercase;letter-spacing:1.5px;
+  font-family:'JetBrains Mono',monospace;
+  margin-bottom:12px;
+}
+.score-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:3rem;font-weight:600;
+  line-height:1;margin-bottom:10px;
+}
+.score-label-pill{
+  display:inline-block;
+  padding:4px 12px;border-radius:20px;
+  font-size:11px;font-weight:500;
+  font-family:'DM Sans',sans-serif;
+}
+
+/* GLASS CARDS */
+.glass-section{
+  padding:100px 60px;
+  background:linear-gradient(135deg,rgba(13,24,41,0.8),rgba(8,13,26,0.9));
+}
+.glass-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:24px;margin-top:60px;
+}
+.glass-card{
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px;padding:36px 28px;
+  backdrop-filter:blur(20px);
+  transition:all 0.3s ease;
+  opacity:0;transform:translateY(20px);
+}
+.glass-card.visible{opacity:1;transform:translateY(0)}
+.glass-card:hover{
+  background:rgba(255,255,255,0.06);
+  border-color:rgba(232,168,56,0.2);
+  transform:translateY(-4px);
+}
+.glass-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:2.4rem;font-weight:600;
+  color:var(--gold);margin-bottom:8px;
+}
+.glass-title{
+  font-family:'Syne',sans-serif;
+  font-size:1rem;font-weight:700;
+  margin-bottom:10px;
+}
+.glass-desc{font-size:13px;color:var(--sub);line-height:1.7}
+
+/* CTA SECTION */
+.cta-section{
+  padding:120px 60px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.cta-section::before{
+  content:'';position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:600px;height:600px;
+  background:radial-gradient(circle,rgba(232,168,56,0.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.cta-title{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(2rem,4vw,3.5rem);
+  font-weight:800;letter-spacing:-1px;
+  margin-bottom:20px;
+}
+.cta-sub{
+  color:var(--sub);font-size:1rem;
+  max-width:480px;margin:0 auto 48px;
+  line-height:1.8;font-weight:300;
+}
+.cta-btn{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--gold);color:#080D1A;
+  border:none;border-radius:12px;
+  padding:18px 44px;
+  font-family:'Syne',sans-serif;
+  font-size:1rem;font-weight:700;
+  cursor:pointer;text-decoration:none;
+  transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+.cta-btn:hover{
+  background:var(--gold2);
+  transform:translateY(-4px) scale(1.03);
+  box-shadow:0 20px 60px rgba(232,168,56,0.35);
+}
+.cta-arrow{
+  font-size:1.2rem;
+  transition:transform 0.2s ease;
+}
+.cta-btn:hover .cta-arrow{transform:translateX(4px)}
+
+/* FOOTER */
+footer{
+  padding:40px 60px;
+  border-top:1px solid rgba(99,130,201,0.1);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.footer-logo{
+  font-family:'Syne',sans-serif;
+  font-size:0.9rem;font-weight:700;
+  color:var(--muted);
+}
+.footer-logo span{color:var(--gold)}
+.footer-tech{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--muted);
+  letter-spacing:0.5px;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(24px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(30px);transition:all 0.7s cubic-bezier(0.4,0,0.2,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">City<span>Stress</span> Index</div>
+  <ul class="nav-links">
+    <li><a href="#factors">Factors</a></li>
+    <li><a href="#scores">Rankings</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+  <a href="https://city-stress-index-va7b5rezdzgxw4zjaxb8ld.streamlit.app/" target="_blank" class="nav-cta">
+    Open dashboard ↗
+  </a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <canvas id="bg"></canvas>
+  <div class="hero-inner">
+    <div class="live-badge">
+      <div class="live-dot"></div>
+      Live · Real-time Urban Intelligence
+    </div>
+    <h1 class="hero-title">
+      Track the pulse of<br>
+      the world's <span class="gold">cities</span>
+    </h1>
+    <p class="hero-sub">
+      A real-time urban health intelligence platform scoring city stress
+      across traffic, air quality, weather, safety, and cost of living.
+    </p>
+    <div class="hero-cta-group">
+      <a href="https://city-stress-index-va7b5rezdzgxw4zjaxb8ld.streamlit.app/" target="_blank" class="btn-primary">
+        Launch dashboard <span>↗</span>
+      </a>
+      <a href="#factors" class="btn-secondary">
+        How it works ↓
+      </a>
+    </div>
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-val" data-count="10">0</span>
+        <span class="stat-label">Cities tracked</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val" data-count="5">0</span>
+        <span class="stat-label">Stress factors</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val">24/7</span>
+        <span class="stat-label">Live updates</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val" data-count="4">0</span>
+        <span class="stat-label">Data sources</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span class="scroll-text">Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- SKYLINE -->
+<div class="skyline-section">
+  <canvas id="skyline"></canvas>
+</div>
+
+<!-- FACTORS -->
+<section class="factors" id="factors">
+  <div class="reveal">
+    <span class="section-label">How it works</span>
+    <h2 class="section-title">Five dimensions of urban stress</h2>
+    <p class="section-sub">Each city is scored daily across five key urban health factors, combining real-time data from multiple global sources.</p>
+  </div>
+  <div class="factors-grid">
+    <div class="factor-card" data-delay="0">
+      <div class="factor-icon" style="background:rgba(231,76,60,0.12)">🚦</div>
+      <div class="factor-name">Traffic</div>
+      <div class="factor-desc">Congestion levels, commute times, and road network efficiency scored via TomTom Traffic API.</div>
+      <div class="factor-score-bar"><div class="factor-score-fill" style="background:#e74c3c" data-pct="78"></div></div>
+    </div>
+    <div class="factor-card" data-delay="80">
+      <div class="factor-icon" style="background:rgba(52,152,219,0.12)">💨</div>
+      <div class="factor-name">Air quality</div>
+      <div class="factor-desc">PM2.5, NO2, ozone and AQI measurements sourced from OpenAQ global sensor network.</div>
+      <div class="factor-score-bar"><div class="factor-score-fill" style="background:#3498db" data-pct="62"></div></div>
+    </div>
+    <div class="factor-card" data-delay="160">
+      <div class="factor-icon" style="background:rgba(46,204,113,0.12)">🌤</div>
+      <div class="factor-name">Weather</div>
+      <div class="factor-desc">Temperature extremes, humidity, and severe weather alerts via OpenWeather and Open-Meteo.</div>
+      <div class="factor-score-bar"><div class="factor-score-fill" style="background:#2ecc71" data-pct="45"></div></div>
+    </div>
+    <div class="factor-card" data-delay="240">
+      <div class="factor-icon" style="background:rgba(155,89,182,0.12)">🔒</div>
+      <div class="factor-name">Safety</div>
+      <div class="factor-desc">Crime indices, incident reports, and public safety scores from Numbeo's global database.</div>
+      <div class="factor-score-bar"><div class="factor-score-fill" style="background:#9b59b6" data-pct="55"></div></div>
+    </div>
+    <div class="factor-card" data-delay="320">
+      <div class="factor-icon" style="background:rgba(232,168,56,0.12)">💰</div>
+      <div class="factor-name">Cost of living</div>
+      <div class="factor-desc">Housing, groceries, transport, and overall affordability from Numbeo's cost-of-living index.</div>
+      <div class="factor-score-bar"><div class="factor-score-fill" style="background:#E8A838" data-pct="70"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SCORE COUNTERS -->
+<section class="scores-section" id="scores">
+  <div class="reveal">
+    <span class="section-label">Live rankings</span>
+    <h2 class="section-title">Today's city stress scores</h2>
+    <p class="section-sub" style="margin:0 auto">Lower is better. Scores update daily from live API feeds.</p>
+  </div>
+  <div class="scores-grid">
+    <div class="score-card" data-delay="0" style="--top:#2ecc71">
+      <div class="score-city">London</div>
+      <div class="score-num" style="color:#2ecc71" data-target="42.3">0</div>
+      <div class="score-label-pill" style="background:rgba(46,204,113,0.12);color:#2ecc71">Low</div>
+    </div>
+    <div class="score-card" data-delay="60" style="--top:#f39c12">
+      <div class="score-city">New York</div>
+      <div class="score-num" style="color:#f39c12" data-target="61.7">0</div>
+      <div class="score-label-pill" style="background:rgba(243,156,18,0.12);color:#f39c12">Moderate</div>
+    </div>
+    <div class="score-card" data-delay="120" style="--top:#e67e22">
+      <div class="score-city">Mumbai</div>
+      <div class="score-num" style="color:#e67e22" data-target="74.5">0</div>
+      <div class="score-label-pill" style="background:rgba(230,126,34,0.12);color:#e67e22">High</div>
+    </div>
+    <div class="score-card" data-delay="180" style="--top:#e74c3c">
+      <div class="score-city">Beijing</div>
+      <div class="score-num" style="color:#e74c3c" data-target="88.2">0</div>
+      <div class="score-label-pill" style="background:rgba(231,76,60,0.12);color:#e74c3c">Critical</div>
+    </div>
+    <div class="score-card" data-delay="240" style="--top:#2ecc71">
+      <div class="score-city">Vienna</div>
+      <div class="score-num" style="color:#2ecc71" data-target="31.4">0</div>
+      <div class="score-label-pill" style="background:rgba(46,204,113,0.12);color:#2ecc71">Low</div>
+    </div>
+  </div>
+</section>
+
+<!-- GLASS CARDS -->
+<section class="glass-section" id="about">
+  <div class="reveal" style="text-align:center">
+    <span class="section-label">By the numbers</span>
+    <h2 class="section-title">Built on real data</h2>
+  </div>
+  <div class="glass-grid">
+    <div class="glass-card" data-delay="0">
+      <div class="glass-num">4+</div>
+      <div class="glass-title">Live data sources</div>
+      <div class="glass-desc">TomTom, OpenAQ, OpenWeather, Open-Meteo, and Numbeo feed daily into the scoring pipeline.</div>
+    </div>
+    <div class="glass-card" data-delay="100">
+      <div class="glass-num">5</div>
+      <div class="glass-title">Weighted factors</div>
+      <div class="glass-desc">Traffic, air quality, weather, safety, and cost of living — each weighted and normalised to a 0–100 scale.</div>
+    </div>
+    <div class="glass-card" data-delay="200">
+      <div class="glass-num">SQLite</div>
+      <div class="glass-title">Star schema warehouse</div>
+      <div class="glass-desc">A fact-and-dimension star schema stores historical scores for 30-day trend analysis and time-series charts.</div>
+    </div>
+    <div class="glass-card" data-delay="300">
+      <div class="glass-num">Python</div>
+      <div class="glass-title">Automated ETL pipeline</div>
+      <div class="glass-desc">Pandas, SQLAlchemy, and a modular ETL pipeline clean, transform, and load data into the warehouse daily.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="reveal">
+    <h2 class="cta-title">See your city's score<br>in real time</h2>
+    <p class="cta-sub">Explore interactive charts, 30-day trends, and a full breakdown of every stress factor across all cities.</p>
+    <a href="https://city-stress-index-va7b5rezdzgxw4zjaxb8ld.streamlit.app/" target="_blank" class="cta-btn">
+      Open live dashboard <span class="cta-arrow">→</span>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">City<span>Stress</span> Index</div>
+  <div class="footer-tech">Python · SQLite · Streamlit · Plotly · TomTom · OpenAQ · OpenWeather · Numbeo</div>
+</footer>
+
+<script>
+/* ── Particle canvas bg ── */
+const bg = document.getElementById('bg');
+const bgCtx = bg.getContext('2d');
+function resizeBg(){bg.width=window.innerWidth;bg.height=window.innerHeight}
+resizeBg();
+window.addEventListener('resize',resizeBg);
+const pts = Array.from({length:60},()=>({
+  x:Math.random()*bg.width, y:Math.random()*bg.height,
+  r:Math.random()*1.8+0.3,
+  dx:(Math.random()-0.5)*0.25, dy:(Math.random()-0.5)*0.25,
+  a:Math.random()*0.35+0.05
+}));
+function drawBg(){
+  bgCtx.clearRect(0,0,bg.width,bg.height);
+  pts.forEach(p=>{
+    p.x+=p.dx; p.y+=p.dy;
+    if(p.x<0||p.x>bg.width) p.dx*=-1;
+    if(p.y<0||p.y>bg.height) p.dy*=-1;
+    bgCtx.beginPath();
+    bgCtx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    bgCtx.fillStyle=`rgba(99,130,201,${p.a})`;
+    bgCtx.fill();
+  });
+  pts.forEach((p,i)=>{
+    pts.slice(i+1).forEach(q=>{
+      const d=Math.hypot(p.x-q.x,p.y-q.y);
+      if(d<120){
+        bgCtx.beginPath();
+        bgCtx.moveTo(p.x,p.y); bgCtx.lineTo(q.x,q.y);
+        bgCtx.strokeStyle=`rgba(99,130,201,${0.06*(1-d/120)})`;
+        bgCtx.lineWidth=0.5; bgCtx.stroke();
+      }
+    });
+  });
+  requestAnimationFrame(drawBg);
+}
+drawBg();
+
+/* ── Animated skyline ── */
+const sky = document.getElementById('skyline');
+const sCtx = sky.getContext('2d');
+function resizeSky(){sky.width=window.innerWidth;sky.height=sky.offsetHeight}
+resizeSky();
+window.addEventListener('resize',resizeSky);
+const W=()=>sky.width, H=()=>sky.height;
+const buildings=[];
+function genBuildings(){
+  buildings.length=0;
+  let x=0;
+  while(x<W()+80){
+    const w=Math.random()*60+30;
+    const h=Math.random()*(H()*0.75)+H()*0.2;
+    const windows=Math.floor(Math.random()*8)+2;
+    buildings.push({x,w,h,windows,lit:Math.random()});
+    x+=w+Math.random()*8;
+  }
+}
+genBuildings();
+window.addEventListener('resize',genBuildings);
+let skyOffset=0;
+function drawSky(){
+  sCtx.clearRect(0,0,W(),H());
+  buildings.forEach((b,i)=>{
+    const bx=(b.x-skyOffset*0.3)%W();
+    sCtx.fillStyle='#0D1829';
+    sCtx.fillRect(bx,H()-b.h,b.w,b.h);
+    for(let row=0;row<b.windows;row++){
+      for(let col=0;col<3;col++){
+        const wx=bx+col*(b.w/3)+4;
+        const wy=H()-b.h+row*16+8;
+        const lit=(Math.sin(Date.now()*0.001+i+row+col)>0.3);
+        sCtx.fillStyle=lit?'rgba(232,168,56,0.6)':'rgba(99,130,201,0.08)';
+        sCtx.fillRect(wx,wy,b.w/3-8,10);
+      }
+    }
+    sCtx.strokeStyle='rgba(99,130,201,0.15)';
+    sCtx.lineWidth=0.5;
+    sCtx.strokeRect(bx,H()-b.h,b.w,b.h);
+  });
+  skyOffset+=0.4;
+  requestAnimationFrame(drawSky);
+}
+drawSky();
+
+/* ── Count-up animation ── */
+function countUp(el,target,duration=1800){
+  const start=Date.now();
+  const isFloat=String(target).includes('.');
+  const decimals=isFloat?1:0;
+  function step(){
+    const p=Math.min((Date.now()-start)/duration,1);
+    const ease=1-Math.pow(1-p,3);
+    const val=target*ease;
+    el.textContent=isFloat?val.toFixed(decimals):Math.round(val);
+    if(p<1) requestAnimationFrame(step);
+  }
+  step();
+}
+
+/* ── Score card top bar ── */
+document.querySelectorAll('.score-card').forEach(c=>{
+  const color=c.style.getPropertyValue('--top');
+  c.style.setProperty('--top-color',color);
+});
+
+/* ── Intersection observer ── */
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(!entry.isIntersecting) return;
+    const el=entry.target;
+
+    if(el.classList.contains('reveal')){
+      el.classList.add('visible');
+    }
+    if(el.classList.contains('factor-card')){
+      const delay=parseInt(el.dataset.delay||0);
+      setTimeout(()=>{
+        el.classList.add('visible');
+        el.querySelectorAll('.factor-score-fill').forEach(bar=>{
+          setTimeout(()=>{bar.style.width=bar.dataset.pct+'%'},200);
+        });
+      },delay);
+    }
+    if(el.classList.contains('score-card')){
+      const delay=parseInt(el.dataset.delay||0);
+      setTimeout(()=>{
+        el.classList.add('visible');
+        const numEl=el.querySelector('.score-num');
+        const target=parseFloat(numEl.dataset.target);
+        countUp(numEl,target,2000);
+      },delay);
+    }
+    if(el.classList.contains('glass-card')){
+      const delay=parseInt(el.dataset.delay||0);
+      setTimeout(()=>el.classList.add('visible'),delay);
+    }
+
+    io.unobserve(el);
+  });
+},{threshold:0.15});
+
+document.querySelectorAll('.reveal,.factor-card,.score-card,.glass-card').forEach(el=>io.observe(el));
+
+/* ── Stat counters on load ── */
+setTimeout(()=>{
+  document.querySelectorAll('.stat-val[data-count]').forEach(el=>{
+    countUp(el,parseInt(el.dataset.count),1500);
+  });
+},600);
+
+/* ── Score card ::before via JS ── */
+document.querySelectorAll('.score-card').forEach(c=>{
+  const color=getComputedStyle(c).getPropertyValue('--top').trim();
+  const pseudo=document.createElement('div');
+  pseudo.style.cssText=`position:absolute;top:0;left:0;right:0;height:3px;border-radius:20px 20px 0 0;background:${color};`;
+  c.style.position='relative';
+  c.insertBefore(pseudo,c.firstChild);
+});
+
+/* ── Nav scroll effect ── */
+window.addEventListener('scroll',()=>{
+  const nav=document.querySelector('nav');
+  nav.style.padding=window.scrollY>50?'12px 60px':'18px 60px';
+});
+</script>
+</body>
+</html>
