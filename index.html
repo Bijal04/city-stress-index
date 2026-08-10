@@ -757,9 +757,6 @@ const io = new IntersectionObserver((entries)=>{
 document.querySelectorAll('.reveal,.factor-card,.score-card,.glass-card').forEach(el=>io.observe(el));
 
 /* ── Stat counters on load ── */
-document.getElementById('city-count').textContent='5';
-document.getElementById('update-time').textContent=
-  new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
 window.addEventListener('load',()=>{
   setTimeout(()=>{
     document.querySelectorAll('.stat-val[data-count]').forEach(el=>{
