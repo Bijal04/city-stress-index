@@ -464,11 +464,11 @@ footer{
     </div>
     <div class="stats">
       <div class="stat">
-        <span class="stat-val" data-count="5">0</span>
+        <span class="stat-val" data-count="5">—</span>
         <span class="stat-label">Cities tracked</span>
       </div>
       <div class="stat">
-        <span class="stat-val" data-count="5">0</span>
+        <span class="stat-val" data-count="5">—</span>
         <span class="stat-label">Stress factors</span>
       </div>
       <div class="stat">
@@ -476,7 +476,7 @@ footer{
         <span class="stat-label">Live updates</span>
       </div>
       <div class="stat">
-        <span class="stat-val" data-count="4">0</span>
+        <span class="stat-val" data-count="4">—</span>
         <span class="stat-label">Data sources</span>
       </div>
     </div>
@@ -538,29 +538,29 @@ footer{
     <p class="section-sub" style="margin:0 auto">Lower is better. Scores update daily from live API feeds.</p>
   </div>
   <div class="scores-grid">
-    <div class="score-card" data-delay="0" style="--top:#2ecc71">
-      <div class="score-city">London</div>
-      <div class="score-num" style="color:#2ecc71" data-target="42.3">0</div>
-      <div class="score-label-pill" style="background:rgba(46,204,113,0.12);color:#2ecc71">Low</div>
-    </div>
-    <div class="score-card" data-delay="60" style="--top:#f39c12">
-      <div class="score-city">New York</div>
-      <div class="score-num" style="color:#f39c12" data-target="61.7">0</div>
+    <div class="score-card" data-delay="0" style="--top:#f39c12">
+      <div class="score-city">Mumbai</div>
+      <div class="score-num" style="color:#f39c12" data-target="46.8">0</div>
       <div class="score-label-pill" style="background:rgba(243,156,18,0.12);color:#f39c12">Moderate</div>
     </div>
-    <div class="score-card" data-delay="120" style="--top:#e67e22">
-      <div class="score-city">Mumbai</div>
-      <div class="score-num" style="color:#e67e22" data-target="74.5">0</div>
-      <div class="score-label-pill" style="background:rgba(230,126,34,0.12);color:#e67e22">High</div>
+    <div class="score-card" data-delay="60" style="--top:#f39c12">
+      <div class="score-city">London</div>
+      <div class="score-num" style="color:#f39c12" data-target="44.5">0</div>
+      <div class="score-label-pill" style="background:rgba(243,156,18,0.12);color:#f39c12">Moderate</div>
     </div>
-    <div class="score-card" data-delay="180" style="--top:#e74c3c">
-      <div class="score-city">Beijing</div>
-      <div class="score-num" style="color:#e74c3c" data-target="88.2">0</div>
-      <div class="score-label-pill" style="background:rgba(231,76,60,0.12);color:#e74c3c">Critical</div>
+    <div class="score-card" data-delay="120" style="--top:#f39c12">
+      <div class="score-city">Toronto</div>
+      <div class="score-num" style="color:#f39c12" data-target="29.0">0</div>
+      <div class="score-label-pill" style="background:rgba(243,156,18,0.12);color:#f39c12">Moderate</div>
+    </div>
+    <div class="score-card" data-delay="180" style="--top:#2ecc71">
+      <div class="score-city">New York</div>
+      <div class="score-num" style="color:#2ecc71" data-target="21.3">0</div>
+      <div class="score-label-pill" style="background:rgba(46,204,113,0.12);color:#2ecc71">Low</div>
     </div>
     <div class="score-card" data-delay="240" style="--top:#2ecc71">
-      <div class="score-city">Vienna</div>
-      <div class="score-num" style="color:#2ecc71" data-target="31.4">0</div>
+      <div class="score-city">Tokyo</div>
+      <div class="score-num" style="color:#2ecc71" data-target="15.7">0</div>
       <div class="score-label-pill" style="background:rgba(46,204,113,0.12);color:#2ecc71">Low</div>
     </div>
   </div>
@@ -760,11 +760,13 @@ document.querySelectorAll('.reveal,.factor-card,.score-card,.glass-card').forEac
 document.getElementById('city-count').textContent='5';
 document.getElementById('update-time').textContent=
   new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-setTimeout(()=>{
-  document.querySelectorAll('.stat-val[data-count]').forEach(el=>{
-    countUp(el,parseInt(el.dataset.count),1500);
-  });
-},600);
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    document.querySelectorAll('.stat-val[data-count]').forEach(el=>{
+      countUp(el,parseInt(el.dataset.count),1500);
+    });
+  },400);
+});
 
 /* ── Score card ::before via JS ── */
 document.querySelectorAll('.score-card').forEach(c=>{
