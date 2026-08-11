@@ -26,35 +26,45 @@ LABEL_COLORS = {
     "Critical": "#e74c3c",
 }
 
+# ── Load data ──────────────────────────────────────────────────
+df = get_latest_scores()
+
+if df.empty:
+    st.warning("No data available. Run the pipeline first.")
+    st.stop()
+
+latest_date = df["date_id"].iloc[0]
+num_cities  = len(df)
+
 # ── Animated hero header ───────────────────────────────────────
-st.components.v1.html("""
+st.components.v1.html(f"""
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@500&display=swap');
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * {{ margin: 0; padding: 0; box-sizing: border-box; }}
 
-  .hero {
+  .hero {{
     position: relative;
     width: 100%;
     padding: 48px 0 36px;
     overflow: hidden;
     background: transparent;
-  }
+  }}
 
-  canvas#particles {
+  canvas#particles {{
     position: absolute;
     top: 0; left: 0;
     width: 100%; height: 100%;
     pointer-events: none;
     opacity: 0.5;
-  }
+  }}
 
-  .hero-content {
+  .hero-content {{
     position: relative;
     z-index: 2;
-  }
+  }}
 
-  .hero-badge {
+  .hero-badge {{
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -69,21 +79,21 @@ st.components.v1.html("""
     text-transform: uppercase;
     margin-bottom: 20px;
     animation: fadeSlideDown 0.6s ease both;
-  }
+  }}
 
-  .hero-badge .dot {
+  .hero-badge .dot {{
     width: 6px; height: 6px;
     border-radius: 50%;
     background: #2ecc71;
     animation: blink 1.5s ease-in-out infinite;
-  }
+  }}
 
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.2; }
-  }
+  @keyframes blink {{
+    0%, 100% {{ opacity: 1; }}
+    50% {{ opacity: 0.2; }}
+  }}
 
-  .hero-title {
+  .hero-title {{
     font-family: 'Syne', sans-serif;
     font-size: 3.2rem;
     font-weight: 800;
@@ -91,70 +101,70 @@ st.components.v1.html("""
     line-height: 1.1;
     margin-bottom: 16px;
     animation: fadeSlideDown 0.7s ease 0.1s both;
-  }
+  }}
 
-  .hero-title span {
+  .hero-title span {{
     background: linear-gradient(135deg, #E8A838 0%, #F2C96A 50%, #E8A838 100%);
     background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     animation: shimmerText 3s linear infinite;
-  }
+  }}
 
-  @keyframes shimmerText {
-    0% { background-position: 0% center; }
-    100% { background-position: 200% center; }
-  }
+  @keyframes shimmerText {{
+    0% {{ background-position: 0% center; }}
+    100% {{ background-position: 200% center; }}
+  }}
 
-  .hero-sub {
+  .hero-sub {{
     font-family: 'DM Sans', sans-serif;
     font-size: 1rem;
     color: #6B7A99;
     max-width: 560px;
     line-height: 1.7;
     animation: fadeSlideDown 0.7s ease 0.2s both;
-  }
+  }}
 
-  .hero-stats {
+  .hero-stats {{
     display: flex;
     gap: 32px;
     margin-top: 32px;
     animation: fadeSlideDown 0.7s ease 0.3s both;
-  }
+  }}
 
-  .hero-stat {
+  .hero-stat {{
     display: flex;
     flex-direction: column;
     gap: 2px;
-  }
+  }}
 
-  .hero-stat-value {
+  .hero-stat-value {{
     font-family: 'JetBrains Mono', monospace;
     font-size: 1.6rem;
     font-weight: 500;
     color: #EEF2FF;
-  }
+  }}
 
-  .hero-stat-label {
+  .hero-stat-label {{
     font-family: 'DM Sans', sans-serif;
     font-size: 11px;
     color: #4A5568;
     text-transform: uppercase;
     letter-spacing: 1px;
-  }
+  }}
 
-  .hero-divider {
+  .hero-divider {{
     width: 1px;
     height: 40px;
     background: rgba(99, 130, 201, 0.2);
     align-self: center;
-  }
+  }}
 
-  @keyframes fadeSlideDown {
-    from { opacity: 0; transform: translateY(-16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+  @keyframes fadeSlideDown {{
+    from {{ opacity: 0; transform: translateY(-16px); }}
+    to   {{ opacity: 1; transform: translateY(0); }}
+  }}
 </style>
 
 <div class="hero">
@@ -171,7 +181,7 @@ st.components.v1.html("""
     </p>
     <div class="hero-stats">
       <div class="hero-stat">
-        <span class="hero-stat-value" id="city-count">—</span>
+        <span class="hero-stat-value" id="city-count">{num_cities}</span>
         <span class="hero-stat-label">Cities Tracked</span>
       </div>
       <div class="hero-divider"></div>
@@ -195,45 +205,35 @@ st.components.v1.html("""
   canvas.width = canvas.offsetWidth;
   canvas.height = canvas.offsetHeight;
 
-  const particles = Array.from({ length: 40 }, () => ({
+  const particles = Array.from({{ length: 40 }}, () => ({{
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
     r: Math.random() * 1.5 + 0.5,
     dx: (Math.random() - 0.5) * 0.3,
     dy: (Math.random() - 0.5) * 0.3,
     alpha: Math.random() * 0.4 + 0.1,
-  }));
+  }}));
 
-  function animateParticles() {
+  function animateParticles() {{
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => {
+    particles.forEach(p => {{
       p.x += p.dx; p.y += p.dy;
       if (p.x < 0 || p.x > canvas.width)  p.dx *= -1;
       if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(99, 130, 201, ${p.alpha})`;
+      ctx.fillStyle = `rgba(99, 130, 201, ${{p.alpha}})`;
       ctx.fill();
-    });
+    }});
     requestAnimationFrame(animateParticles);
-  }
+  }}
   animateParticles();
 
   // Set live time
   document.getElementById('update-time').textContent =
-    new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    new Date().toLocaleTimeString([], {{ hour: '2-digit', minute: '2-digit' }});
 </script>
 """, height=280)
-
-# ── Load data ──────────────────────────────────────────────────
-df = get_latest_scores()
-
-if df.empty:
-    st.warning("No data available. Run the pipeline first.")
-    st.stop()
-
-latest_date = df["date_id"].iloc[0]
-num_cities  = len(df)
 
 # ── Animated city cards ────────────────────────────────────────
 st.markdown("### Today's City Stress Rankings")
