@@ -136,7 +136,7 @@ st.components.v1.html(f"""
   .hero-stat {{
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 4px;
   }}
 
   .hero-stat-value {{
@@ -144,14 +144,16 @@ st.components.v1.html(f"""
     font-size: 1.6rem;
     font-weight: 500;
     color: #EEF2FF;
+    line-height: 1;
   }}
 
   .hero-stat-label {{
     font-family: 'DM Sans', sans-serif;
     font-size: 11px;
-    color: #4A5568;
+    color: #6B7A99;
     text-transform: uppercase;
     letter-spacing: 1px;
+    white-space: nowrap;
   }}
 
   .hero-divider {{
@@ -233,7 +235,7 @@ st.components.v1.html(f"""
   document.getElementById('update-time').textContent =
     new Date().toLocaleTimeString([], {{ hour: '2-digit', minute: '2-digit' }});
 </script>
-""", height=280)
+""", height=380)
 
 # ── Animated city cards ────────────────────────────────────────
 st.markdown("### Today's City Stress Rankings")
