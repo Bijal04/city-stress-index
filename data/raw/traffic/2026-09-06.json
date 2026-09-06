@@ -1,0 +1,32 @@
+[
+  {
+    "city": "Toronto",
+    "timestamp": "2026-09-06T10:12:11.264787",
+    "incident_count": 471,
+    "congestion_index": 47.1
+  },
+  {
+    "city": "New York",
+    "timestamp": "2026-09-06T10:12:11.407558",
+    "incident_count": 286,
+    "congestion_index": 28.6
+  },
+  {
+    "city": "London",
+    "timestamp": "2026-09-06T10:12:11.549823",
+    "incident_count": 1041,
+    "congestion_index": 100
+  },
+  {
+    "city": "Mumbai",
+    "timestamp": "2026-09-06T10:12:11.680365",
+    "incident_count": 240,
+    "congestion_index": 24.0
+  },
+  {
+    "city": "Tokyo",
+    "timestamp": "2026-09-06T10:12:11.804539",
+    "incident_count": 0,
+    "congestion_index": 0.0
+  }
+]
