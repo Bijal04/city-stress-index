@@ -1,0 +1,52 @@
+[
+  {
+    "city": "Toronto",
+    "timestamp": "2026-09-18T10:29:31.713666",
+    "temp_c": 15.18,
+    "feels_like_c": 14.92,
+    "humidity_pct": 83,
+    "wind_speed_mps": 1.03,
+    "rain_1h_mm": 0,
+    "weather_stress_score": 0
+  },
+  {
+    "city": "New York",
+    "timestamp": "2026-09-18T10:29:31.741469",
+    "temp_c": 23.81,
+    "feels_like_c": 24.47,
+    "humidity_pct": 85,
+    "wind_speed_mps": 5.81,
+    "rain_1h_mm": 0,
+    "weather_stress_score": 0
+  },
+  {
+    "city": "London",
+    "timestamp": "2026-09-18T10:29:31.768848",
+    "temp_c": 17.55,
+    "feels_like_c": 17.01,
+    "humidity_pct": 63,
+    "wind_speed_mps": 4.63,
+    "rain_1h_mm": 0,
+    "weather_stress_score": 0
+  },
+  {
+    "city": "Mumbai",
+    "timestamp": "2026-09-18T10:29:31.797156",
+    "temp_c": 30.03,
+    "feels_like_c": 36.12,
+    "humidity_pct": 74,
+    "wind_speed_mps": 6.17,
+    "rain_1h_mm": 0,
+    "weather_stress_score": 40
+  },
+  {
+    "city": "Tokyo",
+    "timestamp": "2026-09-18T10:29:31.828495",
+    "temp_c": 23.09,
+    "feels_like_c": 23.44,
+    "humidity_pct": 76,
+    "wind_speed_mps": 7.2,
+    "rain_1h_mm": 0,
+    "weather_stress_score": 0
+  }
+]
